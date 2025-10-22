@@ -87,9 +87,9 @@ const ChatBotDemo = () => {
   };
 
   return (
-    <div className="w-full h-[90vh] flex flex-col overflow-hidden">
-      <div className="flex flex-col h-full min-h-0">
-        <Conversation className="flex-1 min-h-0">
+    <div className="flex h-[90vh] w-full flex-col overflow-hidden">
+      <div className="flex h-full min-h-0 flex-col">
+        <Conversation className="min-h-0 flex-1">
           <ConversationContent className="h-full overflow-y-auto">
             {messages.map((message) => (
               <div key={message.id}>

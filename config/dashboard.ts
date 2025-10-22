@@ -21,6 +21,7 @@ export const sidebarLinks: SidebarNavItem[] = [
         authorizeOnly: UserRole.USER,
       },
       { href: "/dashboard/charts", icon: "lineChart", title: "Charts" },
+      { href: "/dashboard/tts", icon: "media", title: "Text to Speech" },
       {
         href: "/admin/orders",
         icon: "package",
