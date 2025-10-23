@@ -20,8 +20,8 @@ export default async function Dashboard({ children }: ProtectedLayoutProps) {
   console.log("--- Protected Layout - userId:", userId, "---");
 
   if (!userId) {
-    console.log("--- Protected Layout - userId is null, preventing redirect ---");
-    return null; // Or return a loading spinner, or an empty fragment
+    console.log("--- Protected Layout - userId is null, redirecting to sign-in ---");
+    redirect("/sign-in");
   }
 
   // For now, we'll use a default role since we need to handle user metadata
