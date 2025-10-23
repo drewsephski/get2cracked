@@ -27,7 +27,9 @@ export default async function Author({
   ) : (
     <Link
       href={
-        username === "drewsephski"
+        username === "drewsepeczi"
+          ? `https://instagram.com/${authors[username].instagram}`
+          : username === "drewsephski"
           ? `https://github.com/${username}`
           : `https://twitter.com/${authors[username].twitter}`
       }
@@ -50,7 +52,11 @@ export default async function Author({
           {authors[username].name}
         </p>
         <p className="text-sm text-muted-foreground">
-          {username === "drewsephski" ? `@${username}` : `@${authors[username].twitter}`}
+          {username === "drewsepeczi"
+            ? `@${authors[username].instagram}`
+            : username === "drewsephski"
+            ? `@${username}`
+            : `@${authors[username].twitter}`}
         </p>
       </div>
     </Link>

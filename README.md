@@ -59,6 +59,97 @@ pnpm run dev
 >
 > Use this command for update your project: `ncu -i --format group`
 
+## Deploy to Netlify
+
+Your application is configured for Netlify deployment. Here's how to deploy and set up webhooks:
+
+### 1. Deploy Application
+
+**Option A: Netlify CLI (Recommended)**
+```bash
+# Install Netlify CLI
+pnpm add -D netlify-cli
+
+# Check deployment readiness
+pnpm run deploy:check
+
+# Login to Netlify
+pnpm netlify login
+
+# Deploy to production
+pnpm run deploy:netlify
+
+# Or deploy preview
+pnpm run deploy:netlify:preview
+```
+
+**Option B: Manual Deployment**
+1. Push code to GitHub/GitLab/Bitbucket
+2. Connect repository to [Netlify](https://netlify.com)
+3. Netlify will auto-detect Next.js and deploy
+
+### 2. Set Environment Variables
+
+In Netlify Dashboard:
+1. Go to **Site Settings** → **Environment Variables**
+2. Add your production variables:
+
+```bash
+# Required for production
+STRIPE_API_KEY="sk_live_..."  # Your restricted live key
+STRIPE_WEBHOOK_SECRET="whsec_..."  # Your live webhook secret
+DATABASE_URL="your_production_db_url"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_live_..."
+CLERK_SECRET_KEY="sk_live_..."
+# ... other production variables
+```
+
+### 3. Configure Stripe Webhook
+
+1. **Get your Netlify URL**: After deployment, note your site's URL (e.g., `https://your-site.netlify.app`)
+2. **Go to Stripe Dashboard** → **Developers** → **Webhooks**
+3. **Add new endpoint**: `https://your-site.netlify.app/api/webhooks/stripe`
+4. **Select events**:
+   - `checkout.session.completed`
+   - `invoice.payment_succeeded`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+5. **Copy webhook secret** and add to Netlify environment variables
+
+### 4. Test Webhook
+
+1. Deploy with live environment variables
+2. Make a test purchase to verify webhook works
+3. Check **Stripe Dashboard** → **Developers** → **Webhook logs**
+4. Verify events are processed correctly
+
+### 5. Domain Setup (Optional)
+
+For production domain:
+1. **Netlify**: Add custom domain in site settings
+2. **DNS**: Point your domain to Netlify nameservers
+3. **SSL**: Netlify provides free SSL certificates
+
+### Webhook Events Handled
+
+Your webhook handler processes these Stripe events:
+- ✅ **checkout.session.completed**: Creates user subscription
+- ✅ **invoice.payment_succeeded**: Updates subscription on renewal
+- ✅ **customer.subscription.updated**: Handles plan changes
+- ✅ **customer.subscription.deleted**: Handles cancellations
+
+### Troubleshooting Webhooks
+
+**Common Issues:**
+1. **404 errors**: Ensure webhook URL is correct and app is deployed
+2. **Signature errors**: Verify webhook secret matches in both Stripe and Netlify
+3. **Environment mismatch**: Ensure you're using live keys and secrets in production
+
+**Debug Steps:**
+1. Check Netlify function logs
+2. Verify environment variables are set correctly
+3. Test with Stripe CLI: `stripe listen --forward-to your-netlify-url/api/webhooks/stripe`
+
 ## Roadmap
 - [ ] Upgrade eslint to v9
 - [ ] Add resend for success subscriptions

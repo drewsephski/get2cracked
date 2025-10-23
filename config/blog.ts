@@ -18,8 +18,8 @@ export const BLOG_CATEGORIES: {
 export const BLOG_AUTHORS = {
   drewsepeczi: {
     name: "drew sepeczi",
-    image: "/_static/avatars/mickasmt.png",
-    twitter: "drewsepeczi",
+    image: "/_static/avatars/me-coffee.jpg",
+    instagram: "drew.sepeczi",
   },
   shadcn: {
     name: "shadcn",

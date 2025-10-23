@@ -169,10 +169,16 @@ export default makeSource({
             }
           },
           onVisitHighlightedLine(node) {
+            if (!node.properties.className) {
+              node.properties.className = [];
+            }
             node.properties.className.push('line--highlighted');
           },
           onVisitHighlightedWord(node, id) {
-            node.properties.className = ['word--highlighted'];
+            if (!node.properties.className) {
+              node.properties.className = [];
+            }
+            node.properties.className.push('word--highlighted');
           },
           // Add default processors for better compatibility
           tokensMap: {

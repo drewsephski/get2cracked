@@ -1,43 +1,57 @@
-import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/session";
-import { NextResponse } from "next/server";
-
-export async function GET() {
-  try {
-    const content = await prisma.content.findMany();
-    return NextResponse.json(content);
-  } catch (error) {
-    return new NextResponse("Internal Error", { status: 500 });
-  }
-}
+import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
+import { getCurrentUser } from '@/lib/session';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();
 
     if (!user) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse('Unauthorized', { status: 403 });
     }
+    const json = await req.json();
+    const { title, content, status } = json;
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-*|-*$/g, '');
 
-    const { title, content, slug, status } = await req.json();
-
-    if (!title || !content || !slug) {
-      return new NextResponse("Missing required fields", { status: 400 });
-    }
+    console.log('User object:', user);
 
     const newContent = await prisma.content.create({
       data: {
         title,
         content,
         slug,
-        status,
+        status: status || 'DRAFT',
+        authorId: user.id,
+      },
+    });
+    console.log('Prisma create result:', newContent);
+
+    revalidatePath('/dashboard');
+    return NextResponse.json(newContent, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return new NextResponse('Internal Server Error', { status: 500 });
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return new NextResponse('Unauthorized', { status: 403 });
+    }
+
+    const userContent = await prisma.content.findMany({
+      where: {
         authorId: user.id,
       },
     });
 
-    return NextResponse.json(newContent);
+    return NextResponse.json(userContent, { status: 200 });
   } catch (error) {
-    console.error("[CONTENT_POST]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.error(error);
+    return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
