@@ -25,21 +25,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client"],
   },
-  webpack: (config, { isServer }) => {
-    // Configure for ES module compatibility
-    config.experiments = {
-      ...config.experiments,
-      topLevelAwait: true,
-    };
-
-    // Handle shiki ES module
-    config.module.rules.push({
-      test: /\.mjs$/,
-      type: 'javascript/esm',
-    });
-
-    return config;
-  },
 };
 
 module.exports = withContentlayer(nextConfig);
