@@ -16,15 +16,13 @@ export async function openCustomerPortal(
   userStripeId: string,
 ): Promise<responseAction> {
   try {
-    const session = await currentUser();
+    const user = await currentUser();
 
-    if (!session?.user) {
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    const user = session.user;
-
-    if (!user || !user.email || !user.id) {
+    if (!user || !user.emailAddresses?.[0]?.emailAddress || !user.id) {
       throw new Error("Unauthorized");
     }
 

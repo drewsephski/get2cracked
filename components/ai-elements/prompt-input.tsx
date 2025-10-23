@@ -284,6 +284,7 @@ export function PromptInputAttachment({
       {...props}
     >
       {mediaType === "image" ? (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           alt={data.filename || "attachment"}
           className="size-full rounded-md object-cover"
@@ -554,10 +555,12 @@ export const PromptInput = ({
     [matchesAccept, maxFiles, maxFileSize, onError]
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const add = usingProvider
     ? (files: File[] | FileList) => controller.attachments.add(files)
     : addLocal;
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const remove = usingProvider
     ? (id: string) => controller.attachments.remove(id)
     : (id: string) =>
@@ -569,6 +572,7 @@ export const PromptInput = ({
           return prev.filter((file) => file.id !== id);
         });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const clear = usingProvider
     ? () => controller.attachments.clear()
     : () =>
@@ -581,6 +585,7 @@ export const PromptInput = ({
           return [];
         });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const openFileDialog = usingProvider
     ? () => controller.attachments.openFileDialog()
     : openFileDialogLocal;
@@ -836,8 +841,11 @@ export const PromptInputTextarea = ({
     }
 
     const files: File[] = [];
-
-    for (const item of items) {
+    
+    // Convert DataTransferItemList to array first
+    const itemsArray = Array.from(items);
+    
+    for (const item of itemsArray) {
       if (item.kind === "file") {
         const file = item.getAsFile();
         if (file) {
