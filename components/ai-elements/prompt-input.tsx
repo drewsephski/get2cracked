@@ -276,9 +276,9 @@ export function PromptInputAttachment({
   return (
     <div
       className={cn(
-        "group relative h-14 w-14 rounded-md border",
+        "group relative size-14 rounded-md border",
         className,
-        mediaType === "image" ? "h-14 w-14" : "h-8 w-auto max-w-full"
+        mediaType === "image" ? "size-14" : "h-8 w-auto max-w-full"
       )}
       key={data.id}
       {...props}
@@ -296,13 +296,13 @@ export function PromptInputAttachment({
           <PaperclipIcon className="size-4 shrink-0" />
           <Tooltip delayDuration={400}>
             <TooltipTrigger className="min-w-0 flex-1">
-              <h4 className="w-full truncate text-left font-medium text-sm">
+              <h4 className="w-full truncate text-left text-sm font-medium">
                 {data.filename || "Unknown file"}
               </h4>
             </TooltipTrigger>
             <TooltipContent>
-              <div className="text-muted-foreground text-xs">
-                <h4 className="max-w-[240px] overflow-hidden whitespace-normal break-words text-left font-semibold text-sm">
+              <div className="text-xs text-muted-foreground">
+                <h4 className="max-w-[240px] overflow-hidden whitespace-normal break-words text-left text-sm font-semibold">
                   {data.filename || "Unknown file"}
                 </h4>
                 {data.mediaType && <div>{data.mediaType}</div>}
@@ -313,13 +313,13 @@ export function PromptInputAttachment({
       )}
       <Button
         aria-label="Remove attachment"
-        className="-right-1.5 -top-1.5 absolute h-6 w-6 rounded-full opacity-0 group-hover:opacity-100"
+        className="absolute -right-1.5 -top-1.5 size-6 rounded-full opacity-0 group-hover:opacity-100"
         onClick={() => attachments.remove(data.id)}
         size="icon"
         type="button"
         variant="outline"
       >
-        <XIcon className="h-3 w-3" />
+        <XIcon className="size-3" />
       </Button>
     </div>
   );
@@ -1286,7 +1286,7 @@ export const PromptInputTabLabel = ({
 }: PromptInputTabLabelProps) => (
   <h3
     className={cn(
-      "mb-2 px-3 font-medium text-muted-foreground text-xs",
+      "mb-2 px-3 text-xs font-medium text-muted-foreground",
       className
     )}
     {...props}

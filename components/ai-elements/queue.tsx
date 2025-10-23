@@ -153,7 +153,7 @@ export const QueueItemImage = ({
 }: QueueItemImageProps) => (
   <img
     alt=""
-    className={cn("h-8 w-8 rounded border object-cover", className)}
+    className={cn("size-8 rounded border object-cover", className)}
     height={32}
     width={32}
     {...props}
@@ -215,7 +215,7 @@ export const QueueSectionTrigger = ({
   <CollapsibleTrigger asChild>
     <button
       className={cn(
-        "group flex w-full items-center justify-between rounded-md bg-muted/40 px-3 py-2 text-left font-medium text-muted-foreground text-sm transition-colors hover:bg-muted",
+        "group flex w-full items-center justify-between rounded-md bg-muted/40 px-3 py-2 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted",
         className
       )}
       type="button"
@@ -241,7 +241,7 @@ export const QueueSectionLabel = ({
   ...props
 }: QueueSectionLabelProps) => (
   <span className={cn("flex items-center gap-2", className)} {...props}>
-    <ChevronDownIcon className="group-data-[state=closed]:-rotate-90 size-4 transition-transform" />
+    <ChevronDownIcon className="size-4 transition-transform group-data-[state=closed]:-rotate-90" />
     {icon}
     <span>
       {count} {label}
@@ -266,7 +266,7 @@ export type QueueProps = ComponentProps<"div">;
 export const Queue = ({ className, ...props }: QueueProps) => (
   <div
     className={cn(
-      "flex flex-col gap-2 rounded-xl border border-border bg-background px-3 pt-2 pb-2 shadow-xs",
+      "shadow-xs flex flex-col gap-2 rounded-xl border border-border bg-background px-3 py-2",
       className
     )}
     {...props}

@@ -77,27 +77,27 @@ export function OrbitingCircles({
   delay = 0,
 }: OrbitingCirclesProps) {
   return (
-    <div className={cn("relative h-full w-full", className)}>
+    <div className={cn("relative size-full", className)}>
       <AnimatePresence>
         {children}
         <OrbitingCircle
           radius={radius}
           speed={0.2}
           delay={delay}
-          className="h-4 w-4 bg-blue-500/20"
+          className="size-4 bg-blue-500/20"
         />
         <OrbitingCircle
           radius={radius * 1.5}
           speed={0.25}
           delay={delay + 0.2}
           reverse
-          className="h-3 w-3 bg-purple-500/20"
+          className="size-3 bg-purple-500/20"
         />
         <OrbitingCircle
           radius={radius * 0.8}
           speed={0.3}
           delay={delay + 0.4}
-          className="h-2 w-2 bg-pink-500/20"
+          className="size-2 bg-pink-500/20"
         />
       </AnimatePresence>
     </div>

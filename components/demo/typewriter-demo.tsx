@@ -26,7 +26,7 @@ export function TypewriterDemo() {
           </span>
         </h1>
         <p className="mt-6 text-lg text-muted-foreground">
-          Let's build something incredible together
+          Let&apos;s build something incredible together
         </p>
       </div>
     </div>

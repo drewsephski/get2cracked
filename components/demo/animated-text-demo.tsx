@@ -7,7 +7,7 @@ export function AnimatedTextDemo() {
         <h2 className="mb-4 text-4xl font-bold">Bricolage Grotesque</h2>
         <AnimatedText 
           text="Welcome to our amazing platform"
-          className="text-5xl font-bricolage font-bold text-foreground"
+          className="font-bricolage text-5xl font-bold text-foreground"
           animation="slideUp"
           delay={0.2}
         />
@@ -17,7 +17,7 @@ export function AnimatedTextDemo() {
         <h3 className="mb-4 text-2xl font-semibold">Creative Solutions</h3>
         <AnimatedText 
           text="Building the future with innovative technology"
-          className="text-3xl font-bricolage text-muted-foreground"
+          className="font-bricolage text-3xl text-muted-foreground"
           animation="fadeIn"
           delay={0.5}
         />

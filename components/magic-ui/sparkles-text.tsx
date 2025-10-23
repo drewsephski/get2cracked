@@ -80,7 +80,7 @@ export function SparkleText({
       {sparkles.map((sparkle) => (
         <motion.span
           key={sparkle.id}
-          className="pointer-events-none absolute -z-0 h-1 w-1 rounded-full"
+          className="pointer-events-none absolute -z-0 size-1 rounded-full"
           style={{
             left: sparkle.x,
             top: sparkle.y,

@@ -29,7 +29,7 @@ const Temporary = ({
 
   return (
     <BaseEdge
-      className="stroke-1 stroke-ring"
+      className="stroke-ring stroke-1"
       id={id}
       path={edgePath}
       style={{

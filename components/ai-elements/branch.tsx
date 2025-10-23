@@ -201,7 +201,7 @@ export const BranchPage = ({ className, ...props }: BranchPageProps) => {
   return (
     <span
       className={cn(
-        "font-medium text-muted-foreground text-xs tabular-nums",
+        "text-xs font-medium tabular-nums text-muted-foreground",
         className
       )}
       {...props}

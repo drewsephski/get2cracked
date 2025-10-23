@@ -172,7 +172,7 @@ const ChatBotDemo = () => {
           <ConversationScrollButton />
         </Conversation>
 
-        <PromptInput onSubmit={handleSubmit} className="flex-shrink-0" globalDrop multiple>
+        <PromptInput onSubmit={handleSubmit} className="shrink-0" globalDrop multiple>
           <PromptInputBody>
             <PromptInputAttachments>
               {(attachment) => <PromptInputAttachment data={attachment} />}

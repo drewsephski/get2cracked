@@ -44,7 +44,7 @@ export function AnimatedGradientText({
   return (
     <motion.span
       className={cn(
-        "bg-clip-text text-transparent bg-gradient-to-r",
+        "bg-gradient-to-r bg-clip-text text-transparent",
         from,
         via,
         to,

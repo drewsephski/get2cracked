@@ -60,7 +60,7 @@ export function MagicDemo() {
           <span className="font-medium text-foreground">
             <SparkleText>Ready to elevate your project?</SparkleText>
           </span>{" "}
-          These are just a few examples of what's possible with modern web technologies.
+          These are just a few examples of what&apos;s possible with modern web technologies.
         </p>
       </div>
     </div>
