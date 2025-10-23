@@ -1,4 +1,5 @@
 const { withContentlayer } = require("next-contentlayer2");
+const path = require('path'); // Add this line
 
 import("./env.mjs");
 
@@ -26,24 +27,16 @@ const nextConfig = {
     serverComponentsExternalPackages: ["@prisma/client"],
   },
   // Handle ES modules properly
-  transpilePackages: ["shiki", "rehype-pretty-code"],
-  // Enable proper ES module resolution
-  webpack: (config, { isServer }) => {
-    // Handle ES modules in dependencies
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
+  transpilePackages: [
+    'rehype-pretty-code',
+    'shiki',
+    // include any MDX/rehype tooling used server-side
+  ],
+  webpack: (config) => {
+    // Ensure .mjs is treated as ESM
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.mjs'],
     };
-
-    // Ensure proper module resolution for ES modules
-    if (isServer) {
-      config.externals = config.externals || [];
-      config.externals.push({
-        'shiki': 'shiki',
-        'rehype-pretty-code': 'rehype-pretty-code',
-      });
-    }
-
     return config;
   },
 };

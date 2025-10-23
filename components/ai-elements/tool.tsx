@@ -1,5 +1,3 @@
-"use client";
-
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
@@ -18,7 +16,8 @@ import {
 } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 import { isValidElement } from "react";
-import { CodeBlock } from "./code-block";
+import { CodeBlock, CodeBlockCopyButton } from "./code-block";
+import { getHighlighter } from "@/lib/shiki"; // Import the highlighter
 
 export type ToolProps = ComponentProps<typeof Collapsible>;
 
@@ -100,23 +99,29 @@ export type ToolInputProps = ComponentProps<"div"> & {
   input: ToolUIPart["input"];
 };
 
-export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
-  <div className={cn("space-y-2 overflow-hidden p-4", className)} {...props}>
-    <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-      Parameters
-    </h4>
-    <div className="rounded-md bg-muted/50">
-      <CodeBlock code={JSON.stringify(input, null, 2)} language="json" />
+export const ToolInput = async ({ className, input, ...props }: ToolInputProps) => {
+  const highlighter = await getHighlighter();
+  const codeString = JSON.stringify(input, null, 2);
+  const highlightedHtml = await highlighter.codeToHtml(codeString, { lang: "json" });
+
+  return (
+    <div className={cn("space-y-2 overflow-hidden p-4", className)} {...props}>
+      <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        Parameters
+      </h4>
+      <div className="rounded-md bg-muted/50">
+        <CodeBlock code={codeString} highlightedHtml={highlightedHtml} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export type ToolOutputProps = ComponentProps<"div"> & {
   output: ToolUIPart["output"];
   errorText: ToolUIPart["errorText"];
 };
 
-export const ToolOutput = ({
+export const ToolOutput = async ({
   className,
   output,
   errorText,
@@ -126,15 +131,32 @@ export const ToolOutput = ({
     return null;
   }
 
-  let Output = <div>{output as ReactNode}</div>;
+  const highlighter = await getHighlighter();
+  let Output: ReactNode;
+  let codeString: string;
+  let language = "json"; // Default language for output
 
   if (typeof output === "object" && !isValidElement(output)) {
-    Output = (
-      <CodeBlock code={JSON.stringify(output, null, 2)} language="json" />
-    );
+    codeString = JSON.stringify(output, null, 2);
   } else if (typeof output === "string") {
-    Output = <CodeBlock code={output} language="json" />;
+    codeString = output;
+    // Attempt to infer language if not JSON, e.g., if it's an XML string or plain text
+    if (codeString.startsWith("<") && codeString.endsWith(">")) {
+      language = "xml";
+    } else {
+      language = "text";
+    }
+  } else {
+    codeString = String(output);
+    language = "text";
   }
+
+  const highlightedHtml = await highlighter.codeToHtml(codeString, { lang: language });
+
+  Output = (
+    <CodeBlock code={codeString} highlightedHtml={highlightedHtml} />
+  );
+
 
   return (
     <div className={cn("space-y-2 p-4", className)} {...props}>

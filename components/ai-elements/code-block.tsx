@@ -5,11 +5,6 @@ import { cn } from "@/lib/utils";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { createContext, useContext, useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 type CodeBlockContextType = {
   code: string;
@@ -20,16 +15,14 @@ const CodeBlockContext = createContext<CodeBlockContextType>({
 });
 
 export type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
-  code: string;
-  language: string;
-  showLineNumbers?: boolean;
+  code: string; // Keep code prop for the CopyButton
+  highlightedHtml: string;
   children?: ReactNode;
 };
 
 export const CodeBlock = ({
   code,
-  language,
-  showLineNumbers = false,
+  highlightedHtml,
   className,
   children,
   ...props
@@ -43,52 +36,10 @@ export const CodeBlock = ({
       {...props}
     >
       <div className="relative">
-        <SyntaxHighlighter
-          className="overflow-hidden dark:hidden"
-          codeTagProps={{
-            className: "font-mono text-sm",
-          }}
-          customStyle={{
-            margin: 0,
-            padding: "1rem",
-            fontSize: "0.875rem",
-            background: "hsl(var(--background))",
-            color: "hsl(var(--foreground))",
-          }}
-          language={language}
-          lineNumberStyle={{
-            color: "hsl(var(--muted-foreground))",
-            paddingRight: "1rem",
-            minWidth: "2.5rem",
-          }}
-          showLineNumbers={showLineNumbers}
-          style={oneLight}
-        >
-          {code}
-        </SyntaxHighlighter>
-        <SyntaxHighlighter
-          className="hidden overflow-hidden dark:block"
-          codeTagProps={{
-            className: "font-mono text-sm",
-          }}
-          customStyle={{
-            margin: 0,
-            padding: "1rem",
-            fontSize: "0.875rem",
-            background: "hsl(var(--background))",
-            color: "hsl(var(--foreground))",
-          }}
-          language={language}
-          lineNumberStyle={{
-            color: "hsl(var(--muted-foreground))",
-            paddingRight: "1rem",
-            minWidth: "2.5rem",
-          }}
-          showLineNumbers={showLineNumbers}
-          style={oneDark}
-        >
-          {code}
-        </SyntaxHighlighter>
+        <div
+          dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+          className="shiki-highlighted-code" // Add a class for potential styling
+        />
         {children && (
           <div className="absolute right-2 top-2 flex items-center gap-2">
             {children}
