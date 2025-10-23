@@ -1,5 +1,6 @@
-import { withContentlayer } from "next-contentlayer2";
-import "./env.mjs";
+const { withContentlayer } = require("next-contentlayer2");
+
+import("./env.mjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -26,4 +27,4 @@ const nextConfig = {
   },
 };
 
-export default withContentlayer(nextConfig);
+module.exports = withContentlayer(nextConfig);

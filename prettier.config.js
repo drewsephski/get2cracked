@@ -1,5 +1,5 @@
 /** @type {import('prettier').Config} */
-const config = {
+module.exports = {
   bracketSpacing: true,
   endOfLine: "lf",
   semi: true,
@@ -33,5 +33,3 @@ const config = {
   importOrderCombineTypeAndValueImports: true,
   plugins: ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
 };
-
-export default config
