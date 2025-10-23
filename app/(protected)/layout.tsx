@@ -17,8 +17,12 @@ interface ProtectedLayoutProps {
 
 export default async function Dashboard({ children }: ProtectedLayoutProps) {
   const { userId } = await auth();
+  console.log("--- Protected Layout - userId:", userId, "---");
 
-  if (!userId) redirect("/sign-in");
+  if (!userId) {
+    console.log("--- Protected Layout - userId is null, preventing redirect ---");
+    return null; // Or return a loading spinner, or an empty fragment
+  }
 
   // For now, we'll use a default role since we need to handle user metadata
   const userRole = "USER"; // This should come from user metadata in production

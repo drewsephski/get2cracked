@@ -13,6 +13,7 @@ export const metadata = constructMetadata({
 });
 
 export default async function SettingsPage() {
+  console.log("--- Rendering Settings Page ---");
   const user = await getCurrentUser();
 
   if (!user?.id) redirect("/sign-in");

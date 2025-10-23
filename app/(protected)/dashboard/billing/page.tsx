@@ -15,6 +15,7 @@ export const metadata = constructMetadata({
 });
 
 export default async function BillingPage() {
+  console.log("--- Rendering Billing Page ---");
   const user = await getCurrentUser();
 
   if (!user?.id) {
