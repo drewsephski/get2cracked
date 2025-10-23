@@ -29,7 +29,7 @@ Clone & create this repo locally with the following command:
 npx create-next-app my-get-cracked-project --example "https://github.com/drewsephski/get2cracked"
 ```
 
-Or, deploy with Vercel:
+Or, deploy with Vercel:z
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdrewsephski%2Fget2cracked)
 

@@ -15,7 +15,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: optionalString(),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
+    NEXT_PUBLIC_APP_URL: z.string().url().default('https://get2cracked.netlify.app'),
     NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID: optionalString(),
     NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID: optionalString(),
     NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID: optionalString(),
