@@ -52,7 +52,7 @@ export default async function DashboardPage() {
             <EmptyPlaceholder.Description>
               You don&apos;t have any content yet. Start creating content.
             </EmptyPlaceholder.Description>
-            <AddContentDialog />
+            <AddContentDialog key={contents.length + 1} />
           </EmptyPlaceholder>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

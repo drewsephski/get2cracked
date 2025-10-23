@@ -15,6 +15,9 @@ interface VoiceListResponse {
   voices_page: Voice[];
 }
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const apiKey = process.env.HUME_API_KEY;
