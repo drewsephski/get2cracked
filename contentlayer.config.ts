@@ -185,6 +185,12 @@ export default makeSource({
             fn: 'entity.name.function',
             objKey: 'meta.object-literal.key',
           },
+          // Explicitly configure shiki to use ES modules
+          shikiOptions: {
+            // Ensure proper module resolution
+            langs: [],
+            themes: [],
+          },
         },
       ],
       () => (tree) => {

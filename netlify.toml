@@ -3,8 +3,10 @@
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "20.11.1"
+  NODE_VERSION = "20.18.0"
   NPM_FLAGS = "--version"
+  # Enable ES modules support
+  NODE_OPTIONS = "--experimental-specifier-resolution=node"
 
 [functions]
   node_bundler = "esbuild"

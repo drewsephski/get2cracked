@@ -25,6 +25,27 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client"],
   },
+  // Handle ES modules properly
+  transpilePackages: ["shiki", "rehype-pretty-code"],
+  // Enable proper ES module resolution
+  webpack: (config, { isServer }) => {
+    // Handle ES modules in dependencies
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
+
+    // Ensure proper module resolution for ES modules
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push({
+        'shiki': 'shiki',
+        'rehype-pretty-code': 'rehype-pretty-code',
+      });
+    }
+
+    return config;
+  },
 };
 
 module.exports = withContentlayer(nextConfig);
