@@ -1,6 +1,6 @@
 <a href="https://next-saas-stripe-starter.vercel.app">
   <img alt="Get Cracked" src="public/_static/og.jpg">
-  <h1 align="center">Next Get Cracked Starter</h1>
+  <h1 align="center">Get Cracked Starter</h1>
 </a>
 
 <p align="center">
@@ -11,8 +11,7 @@
   <a href="#introduction"><strong>Introduction</strong></a> ·
   <a href="#installation"><strong>Installation</strong></a> ·
   <a href="#tech-stack--features"><strong>Tech Stack + Features</strong></a> ·
-  <a href="#author"><strong>Author</strong></a> ·
-  <a href="#credits"><strong>Credits</strong></a>
+  <a href="#author"><strong>Author</strong></a>
 </p>
 <br/>
 
@@ -27,12 +26,12 @@ All seamlessly integrated with the Get Cracked starter to accelerate your develo
 Clone & create this repo locally with the following command:
 
 ```bash
-npx create-next-app my-get-cracked-project --example "https://github.com/mickasmt/next-saas-stripe-starter"
+npx create-next-app my-get-cracked-project --example "https://github.com/drewsephski/get2cracked"
 ```
 
 Or, deploy with Vercel:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmickasmt%2Fnext-saas-stripe-starter)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdrewsephski%2Fget2cracked)
 
 ### Steps
 
@@ -99,10 +98,110 @@ In Netlify Dashboard:
 STRIPE_API_KEY="sk_live_..."  # Your restricted live key
 STRIPE_WEBHOOK_SECRET="whsec_..."  # Your live webhook secret
 DATABASE_URL="your_production_db_url"
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_live_..."
-CLERK_SECRET_KEY="sk_live_..."
+
+# Clerk Production Keys (REQUIRED)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_live_..."  # Your production publishable key
+CLERK_SECRET_KEY="sk_live_..."  # Your production secret key
+
+# Application URL (REQUIRED for production)
+NEXT_PUBLIC_APP_URL="https://yourdomain.com"  # Your production domain
+
 # ... other production variables
 ```
+
+## 🚀 Clerk Production Deployment
+
+**IMPORTANT**: Before deploying to production, you must configure Clerk for production use. This ensures security and proper authentication functionality.
+
+### 1. Create Production Instance
+
+1. Go to [Clerk Dashboard](https://dashboard.clerk.com)
+2. Click **Development** → **Create production instance**
+3. Choose to **clone your development settings** (recommended)
+4. Your production instance will be created with a new set of API keys
+
+### 2. Update API Keys
+
+Replace your development keys with production keys:
+
+- **Development**: `pk_test_...` → `pk_live_...`
+- **Development**: `sk_test_...` → `sk_live_...`
+
+**⚠️ CRITICAL**: Never use test keys (`pk_test_`, `sk_test_`) in production!
+
+### 3. Configure OAuth for Production
+
+1. In Clerk Dashboard, go to **Authentication** → **Social providers**
+2. For each OAuth provider (Google, GitHub, etc.):
+   - Create OAuth applications in respective provider dashboards
+   - Use your **production domain** as the redirect URL
+   - Copy credentials to Clerk Dashboard
+
+**Note**: Clerk's shared OAuth credentials only work in development. Production requires your own OAuth apps.
+
+### 4. Update Webhooks (If Using)
+
+1. In Clerk Dashboard, go to **Webhooks**
+2. Update webhook endpoints to use your production domain
+3. Copy the new production signing secret to your environment variables
+
+### 5. DNS Configuration
+
+1. In Clerk Dashboard, go to **Domains**
+2. Add your production domain
+3. Clerk will show required DNS records
+4. Add these records to your DNS provider
+5. **Wait up to 48 hours** for DNS propagation
+
+### 6. Security Configuration
+
+Your middleware is pre-configured with `authorizedParties` for enhanced security:
+
+```typescript
+// middleware.ts - Automatically configured
+clerkMiddleware({
+  authorizedParties: process.env.NODE_ENV === 'production'
+    ? [new URL(process.env.NEXT_PUBLIC_APP_URL).host]
+    : undefined
+})
+```
+
+This prevents subdomain cookie leaking attacks in production.
+
+### 7. Deploy Certificates
+
+1. In Clerk Dashboard, complete all required steps
+2. Click **Deploy certificates** when it appears
+3. Clerk will provision SSL certificates for your domain
+
+### 8. Verify Deployment
+
+Run the deployment helper to verify everything is configured:
+
+```bash
+pnpm run deploy:check
+```
+
+This script validates:
+- ✅ Environment variables are set
+- ✅ Using production Clerk keys (not test keys)
+- ✅ Production domain is configured
+- ✅ Webhook endpoints are updated
+- ✅ All deployment prerequisites
+
+### Troubleshooting
+
+**Common Issues:**
+- **Invalid keys**: Ensure you're using `pk_live_` and `sk_live_` (not `pk_test_` or `sk_test_`)
+- **OAuth failures**: Verify OAuth credentials are set up for your production domain
+- **DNS issues**: DNS propagation can take up to 48 hours
+- **Domain verification**: Ensure your domain is properly verified in Clerk Dashboard
+
+**Debug Steps:**
+1. Check Clerk Dashboard for error messages
+2. Verify environment variables in Netlify
+3. Test authentication flows in production
+4. Check browser console for any errors
 
 ### 3. Configure Stripe Webhook
 
@@ -161,7 +260,6 @@ https://github.com/mickasmt/next-saas-stripe-starter/assets/62285783/828a4e0f-30
 ### Frameworks
 
 - [Next.js](https://nextjs.org/) – React framework for building performant apps with the best developer experience
-- [Auth.js](https://authjs.dev/) – Handle user authentication with ease with providers like Google, Twitter, GitHub, etc.
 - [Prisma](https://www.prisma.io/) – Typescript-first ORM for Node.js
 - [React Email](https://react.email/) – Versatile email framework for efficient and flexible email development
 
@@ -202,12 +300,4 @@ https://github.com/mickasmt/next-saas-stripe-starter/assets/62285783/828a4e0f-30
 
 ## Author
 
-Created by [@drewsephski](https://github.com/drewsephski) in 2023, released under the [MIT license](https://github.com/shadcn/taxonomy/blob/main/LICENSE.md).
-
-## Credits
-
-This project was inspired by shadcn's [Taxonomy](https://github.com/shadcn-ui/taxonomy), Steven Tey’s [Precedent](https://github.com/steven-tey/precedent), and Antonio Erdeljac's [Next 13 AI SaaS](https://github.com/AntonioErdeljac/next13-ai-saas).
-
-- Shadcn ([@shadcn](https://twitter.com/shadcn))
-- Steven Tey ([@steventey](https://twitter.com/steventey))
-- Antonio Erdeljac ([@YTCodeAntonio](https://twitter.com/AntonioErdeljac))
+Created by [@drewsephski](https://github.com/drewsephski)

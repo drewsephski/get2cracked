@@ -35,5 +35,5 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID,
     NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID,
   },
-  skipValidation: true, // Skip validation to allow empty strings
+  skipValidation: process.env.NODE_ENV === 'development', // Only skip validation in development
 });

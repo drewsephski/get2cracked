@@ -1,5 +1,5 @@
 const { withContentlayer } = require("next-contentlayer2");
-const path = require('path'); // Add this line
+const path = require('path');
 
 import("./env.mjs");
 
