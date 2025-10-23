@@ -171,8 +171,13 @@ export default makeSource({
           onVisitHighlightedLine(node) {
             node.properties.className.push('line--highlighted');
           },
-          onVisitHighlightedWord(node) {
+          onVisitHighlightedWord(node, id) {
             node.properties.className = ['word--highlighted'];
+          },
+          // Add default processors for better compatibility
+          tokensMap: {
+            fn: 'entity.name.function',
+            objKey: 'meta.object-literal.key',
           },
         },
       ],
