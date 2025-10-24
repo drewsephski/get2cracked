@@ -12,164 +12,134 @@ description: How to manage subscriptions with Stripe.
 
 <Steps>
 
-### Create a Project
+### Create a Stripe Account and Obtain API Keys
 
-After logging in, create a project on Stripe.
+1.  **Create a Stripe Account:** If you don't already have one, sign up for a Stripe account at [https://stripe.com/](https://stripe.com/).
+2.  **Access API Keys:** Once logged in, navigate to the [API Keys section](https://dashboard.stripe.com/apikeys) of your Stripe Dashboard.
+3.  **Copy Secret Key:** In "Developer" mode, locate and copy your **Secret Key** (it usually starts with `sk_test_` for test mode or `sk_live_` for live mode).
+4.  **Update `.env` File:** Paste this secret key into your project's `.env` file:
 
-### Obtain Stripe API Key
+    ```bash
+    STRIPE_API_KEY="sk_your_secret_key"
+    ```
+    Replace `"sk_your_secret_key"` with the actual secret key you copied from Stripe.
 
-In "Developer" mode, go to "API Keys" and copy the secret key.
+### Configure Stripe Webhook
 
-Paste it into your `.env` file.
+Set up a webhook to receive important events from Stripe, such as successful payments and subscription changes.
 
-```js
-STRIPE_API_KEY = sk_your_secret_key
-```
+1.  **Add Endpoint:** Go to your Stripe Dashboard, navigate to [Developers > Webhooks](https://dashboard.stripe.com/webhooks), and click **"Add endpoint"**.
+2.  **Endpoint URL:** For local development, use a tool like the Stripe CLI to forward events to your local application. For production, enter your live domain's webhook URL (e.g., `https://yourdomain.com/api/webhooks/stripe`).
+3.  **Select Events:** Choose the following events to listen for:
+    *   `checkout.session.completed`
+    *   `customer.subscription.updated`
+    *   `invoice.payment_succeeded`
+    *   `customer.subscription.deleted`
+4.  **Get Signing Secret:** After creating the endpoint, Stripe will provide a **Signing secret** (starts with `whsec_`). Copy this secret.
+5.  **Update `.env` File:** Add the secret to your `.env` file:
 
-### Set up Stripe Webhook
-
-Create a webhook to manage Stripe events within your app.
-
-1. **Create Webhook Endpoint:** Go to your Stripe dashboard and navigate to "Developers" > "Webhooks". Click on "Add endpoint" to create a new webhook.
-2. **Configure Webhook:** Enter the endpoint URL where Stripe will send events. This URL should point to a route in your application that can handle Stripe webhook events.
-
-3. **Select Events:** Choose the events you want to receive notifications for.
-   Common events include `checkout.session.completed`, `customer.subscription.updated`, `invoice.payment_succeeded`, etc.
-
-4. **Obtain Webhook Signing Secret:** After setting up the webhook, Stripe will generate a signing secret. Copy this secret and paste it into your `.env` file as `STRIPE_WEBHOOK_SECRET`.
-
-```js
-STRIPE_WEBHOOK_SECRET = whsec_your_secret_webhook
-```
+    ```bash
+    STRIPE_WEBHOOK_SECRET="whsec_your_secret_webhook"
+    ```
+    Replace `"whsec_your_secret_webhook"` with your actual webhook secret.
 
 ### Create Price Cards
 
-Create price cards to obtain price IDs for both monthly and yearly plans.
+To offer different subscription tiers (e.g., "Pro" and "Business" with monthly/yearly options), you need to create "Products" and "Pricing Plans" in Stripe.
 
-1. **Navigate to Products:** In your Stripe dashboard, go to "Products" > "Create Product". Enter the details for your subscription product, such as name, description, and pricing.
+1.  **Create Products:**
+    *   In your Stripe Dashboard, go to [Products](https://dashboard.stripe.com/products).
+    *   Click **"+ Add product"** and create a product for each tier (e.g., "Pro Plan", "Business Plan").
+2.  **Create Pricing Plans:**
+    *   For each product, click **"+ Add another price"**.
+    *   Configure the price details: amount, currency, and billing interval (e.g., "Monthly" or "Yearly").
+3.  **Obtain Price IDs:**
+    *   After creating each pricing plan, you'll see a unique **Price ID** (e.g., `price_XXXXXXXXXXXXXX`). Copy these IDs.
+4.  **Update `.env` File:** Paste the copied Price IDs into your `.env` file for each corresponding plan:
 
-2. **Create Pricing Plans:** Once the product is created, go to the "Pricing" section and click on "Add pricing plan". Set up the details for your pricing plan, including the amount, currency, billing interval (monthly or yearly), and any other relevant information.
+    ```bash
+    NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID="price_your_pro_monthly_id"
+    NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID="price_your_pro_yearly_id"
 
-3. **Obtain Price IDs:** After creating the pricing plans, Stripe will generate unique price IDs for each plan. These IDs are used to identify the specific pricing plan when creating subscriptions. Copy the price IDs for both the monthly and yearly plans and paste them into your `.env` file as follows:
-
-```js
-NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID = price_FaKeId
-NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID = price_FaKeId
-
-NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID = price_FaKeId
-NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID = price_FaKeId
-```
-
-Ensure that you replace `price_FaKeId` with the actual price IDs generated by Stripe for your pricing plans.
+    NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID="price_your_business_monthly_id"
+    NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID="price_your_business_yearly_id"
+    ```
+    Remember to replace the placeholder values with your actual Stripe Price IDs.
 
 <Callout type="warning">
-  Don't forget to change the prices in `config/subscriptions.ts`.
+  **Important:** Ensure the prices configured in Stripe match the values in your `config/subscriptions.ts` file to avoid discrepancies.
 </Callout>
 
 ## Going Live with Stripe
 
-When you're ready to accept real payments, you'll need to switch from test mode to live mode.
+Once you've thoroughly tested your subscription flow in development, follow these steps to go live and accept real payments:
 
-### 1. Update API Keys
+### 1. Update API Keys to Live Mode
 
-1. In your Stripe dashboard, go to **Developers** > **API Keys**
-2. Copy your **live secret key** (starts with `sk_live_`)
+1.  In your Stripe Dashboard, switch from "Test mode" to "Live mode" using the toggle in the left sidebar.
+2.  Navigate to [Developers > API Keys](https://dashboard.stripe.com/apikeys).
+3.  Copy your **Live Secret Key** (starts with `sk_live_`).
+4.  **Security Best Practice**: Consider creating a **Restricted API Key** for production. This limits the key's permissions, enhancing security.
+    *   Click **"Create restricted key"** and grant necessary permissions (e.g., `write` access for Products, Prices, Checkout Sessions, Customers, Subscriptions, Invoices, Payment Methods, Webhook Endpoints; `read` access for Events, Balance).
+5.  Update your production environment variables (`.env` file or hosting provider settings) with the live secret key:
 
-**Security Recommendation**: Create a **Restricted API key** instead of using the standard key:
+    ```bash
+    STRIPE_API_KEY="sk_live_your_restricted_key"
+    ```
 
-1. Click **"Create restricted key"**
-2. Set appropriate permissions:
-   - **Write access**: Products, Prices, Checkout Sessions, Customers, Subscriptions, Invoices, Payment Methods, Webhook Endpoints
-   - **Read access**: All other resources (Events, Balance, etc.)
-   - **No access**: Test mode, Radar, Sigma, etc.
+### 2. Configure Live Webhook Endpoint
 
-**Why Restricted Keys?**
-- **Enhanced Security**: Limits what your application can do if compromised
-- **Principle of Least Privilege**: Only access what's needed for your SaaS
-- **Audit Trail**: Stripe tracks what each key accesses
-- **Easier Recovery**: If compromised, restricted keys limit potential damage
+1.  In your Stripe Dashboard, go to [Developers > Webhooks](https://dashboard.stripe.com/webhooks).
+2.  Add a new endpoint that points to your **production domain** (e.g., `https://yourdomain.com/api/webhooks/stripe`).
+3.  Select the same events as you did for your test webhook (e.g., `checkout.session.completed`, `customer.subscription.updated`, `invoice.payment_succeeded`, `customer.subscription.deleted`).
+4.  Copy the new **Signing secret** for this live webhook.
+5.  Update your production environment variables with the live webhook secret:
 
-**Standard vs Restricted Keys:**
-- **Standard Key**: Full access to your Stripe account (not recommended for production)
-- **Restricted Key**: Only access to specific resources you define (recommended)
+    ```bash
+    STRIPE_WEBHOOK_SECRET="whsec_your_live_webhook_secret"
+    ```
 
-```js
-# Use restricted key for better security
-STRIPE_API_KEY="sk_live_your_restricted_key"
-```
+### 3. Create Live Products and Price Cards
 
-### 2. Update Webhook Endpoint
+You need to recreate your products and pricing plans directly in Stripe's live mode.
 
-1. In Stripe dashboard, go to **Developers** > **Webhooks**
-2. Add a new webhook endpoint pointing to your **production domain** (e.g., `https://yourdomain.com/api/webhooks/stripe`)
-3. Copy the new webhook secret and update your `.env` file
-4. Select the same events as your test webhook
+1.  In your Stripe Dashboard, ensure you are in "Live mode".
+2.  Go to [Products](https://dashboard.stripe.com/products).
+3.  Create new products and their associated pricing plans for each subscription tier (e.g., "Pro Plan" and "Business Plan", with monthly and yearly options).
+4.  Copy the **Price IDs** for all your live pricing plans.
+5.  Update your production environment variables with these live Price IDs:
 
-### 3. Create Live Products
+    ```bash
+    NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID="price_live_pro_monthly_id"
+    NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID="price_live_pro_yearly_id"
+    NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID="price_live_business_monthly_id"
+    NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID="price_live_business_yearly_id"
+    ```
 
-**Option A: Create New Products (Recommended)**
-1. In Stripe dashboard, go to **Products**
-2. Create new products identical to your test products
-3. Copy the new price IDs and update your `.env` file
+### 4. Deploy Your Application
 
-**Option B: Convert Test Products**
-1. Go to **Developers** > **API Keys**
-2. Temporarily switch back to test keys
-3. Use the Stripe CLI to copy products: `stripe products list --live` then recreate in live mode
+1.  **Deploy your application** to your hosting platform (e.g., Vercel, Netlify).
+2.  **Ensure all production environment variables are correctly set** on your hosting platform with the live Stripe keys and Price IDs.
 
-### 4. Update Environment Variables
+### 5. Test Live Webhooks and Subscription Flow
 
-Update your production environment variables with the live price IDs:
+After deployment, it's crucial to test the entire subscription process in your live environment:
 
-```js
-NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID="price_live_monthly_id"
-NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID="price_live_yearly_id"
-NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID="price_live_monthly_id"
-NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID="price_live_yearly_id"
-```
+1.  Make a test purchase using a real (or test) credit card.
+2.  Verify that the user's subscription is correctly created and updated in your application's database.
+3.  Check the [Stripe Webhook logs](https://dashboard.stripe.com/webhooks/recent) to ensure events are being received and processed successfully by your application.
 
-### 5. Deploy and Test Webhooks
+Your webhook endpoint (`/api/webhooks/stripe`) is configured to handle these critical events:
 
-1. **Deploy your application** to Netlify or your hosting platform
-2. **Set environment variables** in your production environment
-3. **Configure webhook endpoint** in Stripe dashboard pointing to your production URL
-4. **Test the complete flow**:
-   - Make a test purchase
-   - Check that user subscription is created in your database
-   - Verify webhook events appear in Stripe dashboard
-
-### Environment Variables for Production
-
-Your production `.env` file should include:
-
-```bash
-# Production Database
-DATABASE_URL="your_production_database_url"
-
-# Production Stripe (Restricted API Key)
-STRIPE_API_KEY="sk_live_your_restricted_key"
-STRIPE_WEBHOOK_SECRET="whsec_your_live_webhook_secret"
-
-# Production Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_live_..."
-CLERK_SECRET_KEY="sk_live_..."
-
-# Other production variables...
-```
-
-### Webhook Event Handling
-
-Your webhook endpoint (`/api/webhooks/stripe`) handles these events:
-
-- **`checkout.session.completed`**: Creates subscription in database when user purchases
-- **`invoice.payment_succeeded`**: Updates subscription on successful renewal payment
-- **`customer.subscription.updated`**: Handles subscription plan changes
-- **`customer.subscription.deleted`**: Handles subscription cancellations
+*   **`checkout.session.completed`**: Creates a new subscription record in your database after a successful purchase.
+*   **`invoice.payment_succeeded`**: Updates the subscription status upon successful renewal payments.
+*   **`customer.subscription.updated`**: Manages changes to existing subscriptions (e.g., plan upgrades/downgrades).
+*   **`customer.subscription.deleted`**: Processes subscription cancellations.
 
 <Callout type="info">
   **Webhook URL Format**: `https://yourdomain.com/api/webhooks/stripe`
 
-  Replace `yourdomain.com` with your actual production domain.
+  Remember to replace `yourdomain.com` with your actual production domain.
 </Callout>
 
 </Steps>

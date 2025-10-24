@@ -1,26 +1,78 @@
 ---
 title: Markdown Files
-description: How works blog and docs.
+description: How to manage content using Markdown and Contentlayer in your Get Cracked Starter SaaS template.
 ---
 
-The project includes a blog and documentation built using [Contentlayer](https://contentlayer.dev/) and [MDX](https://mdxjs.com/).
+Your Get Cracked Starter SaaS template leverages [Contentlayer](https://contentlayer.dev/) and [MDX](https://mdxjs.com/) to manage blog posts, documentation, and static pages. This setup provides a powerful and flexible way to organize your content directly within your project.
 
-## Contentlayer
+## Contentlayer Overview
 
-Contentlayer is a Markdown-based CMS that's flexible and extensible. It lets you organize content using Markdown files and offers a straightforward API for accessing data in your app.
+Contentlayer acts as a Markdown-based Content Management System (CMS) that is pre-configured in your template. It allows you to define the structure of your content using Markdown files and provides a straightforward API to access this data within your Next.js application.
 
-You can create reusable data models for various content types like blog posts, docs, and pages with Contentlayer.
+The primary benefit of Contentlayer in this template is its ability to:
+-   **Organize Content**: Keep all your content files (blog posts, docs, pages) structured within designated directories.
+-   **Define Data Models**: The template comes with pre-defined data models for different content types, ensuring consistency and ease of use.
+-   **Access Content Easily**: Contentlayer processes your Markdown files into ready-to-use JavaScript objects, which you can import and render in your React components.
 
-Frontmatter in Markdown files allows you to define metadata such as title, description, authors, and images, simplifying content management.
+## Managing Content with Markdown and Frontmatter
 
-### contentlayer.config.js
+All content in your template is written in Markdown (`.mdx`) files. These files include a "frontmatter" section at the top, which is a YAML block containing metadata about the content (e.g., title, description, author).
 
-Here's an example of a `contentlayer.config.js` file to configure Contentlayer in your project:
+### Content Directories
+
+Your template is set up with the following content directories:
+
+-   [`content/blog`](content/blog): For all your blog posts.
+-   [`content/docs`](content/docs): For your product documentation.
+-   [`content/pages`](content/pages): For static pages like "About Us," "Privacy Policy," or "Terms of Service."
+-   [`content/guides`](content/guides): For detailed guides or tutorials.
+
+### Creating New Content
+
+To create new content, simply add a new `.mdx` file within the appropriate directory.
+
+**Example: Creating a new blog post**
+
+1.  Navigate to the [`content/blog`](content/blog) directory.
+2.  Create a new file, for example, `my-new-post.mdx`.
+3.  Add your content, including the frontmatter, at the top of the file:
+
+    ```md
+    ---
+    title: My Awesome New Blog Post
+    description: This is a great post about something interesting.
+    date: "YYYY-MM-DD"
+    image: /_static/blog/my-new-post-image.jpg
+    authors:
+      - your-author-slug
+    ---
+
+    ## Introduction
+
+    This is the main content of your blog post, written in Markdown.
+
+    You can use **bold** text, *italic* text, [links](https://example.com), and more.
+
+    ```
+
+### Customizing `contentlayer.config.js`
+
+Your template includes a [`contentlayer.config.js`](contentlayer.config.ts) file at the root of your project. This file defines the Contentlayer schema, specifying how your Markdown files are processed and what fields are available in their frontmatter.
+
+**Location**: [`contentlayer.config.js`](contentlayer.config.ts)
+
+You generally won't need to modify this file for basic content management. However, if you wish to:
+-   Add new content types (e.g., `Tutorial`).
+-   Add custom fields to existing content types (e.g., an `excerpt` field for blog posts).
+-   Change the file paths Contentlayer watches.
+
+You can modify [`contentlayer.config.js`](contentlayer.config.ts) to suit your needs. The existing configuration provides examples for `Doc`, `Guide`, `Post`, and `Page` document types, including how to define required fields and computed fields like `slug`.
+
+### Example `contentlayer.config.js` Structure (Pre-configured)
 
 ```typescript title="contentlayer.config.js"
 import { defineDocumentType, makeSource } from "contentlayer/source-files";
 
-/** @type {import('contentlayer/source-files').ComputedFields} */
 const computedFields = {
   slug: {
     type: "string",
@@ -37,17 +89,9 @@ export const Doc = defineDocumentType(() => ({
   filePathPattern: `docs/**/*.mdx`,
   contentType: "mdx",
   fields: {
-    title: {
-      type: "string",
-      required: true,
-    },
-    description: {
-      type: "string",
-    },
-    published: {
-      type: "boolean",
-      default: true,
-    },
+    title: { type: "string", required: true },
+    description: { type: "string" },
+    published: { type: "boolean", default: true },
   },
   computedFields,
 }));
@@ -57,25 +101,11 @@ export const Guide = defineDocumentType(() => ({
   filePathPattern: `guides/**/*.mdx`,
   contentType: "mdx",
   fields: {
-    title: {
-      type: "string",
-      required: true,
-    },
-    description: {
-      type: "string",
-    },
-    date: {
-      type: "date",
-      required: true,
-    },
-    published: {
-      type: "boolean",
-      default: true,
-    },
-    featured: {
-      type: "boolean",
-      default: false,
-    },
+    title: { type: "string", required: true },
+    description: { type: "string" },
+    date: { type: "date", required: true },
+    published: { type: "boolean", default: true },
+    featured: { type: "boolean", default: false },
   },
   computedFields,
 }));
@@ -85,30 +115,12 @@ export const Post = defineDocumentType(() => ({
   filePathPattern: `blog/**/*.mdx`,
   contentType: "mdx",
   fields: {
-    title: {
-      type: "string",
-      required: true,
-    },
-    description: {
-      type: "string",
-    },
-    date: {
-      type: "date",
-      required: true,
-    },
-    published: {
-      type: "boolean",
-      default: true,
-    },
-    image: {
-      type: "string",
-      required: true,
-    },
-    authors: {
-      type: "list",
-      of: { type: "string" },
-      required: true,
-    },
+    title: { type: "string", required: true },
+    description: { type: "string" },
+    date: { type: "date", required: true },
+    published: { type: "boolean", default: true },
+    image: { type: "string", required: true },
+    authors: { type: "list", of: { type: "string" }, required: true },
   },
   computedFields,
 }));
@@ -118,13 +130,8 @@ export const Page = defineDocumentType(() => ({
   filePathPattern: `pages/**/*.mdx`,
   contentType: "mdx",
   fields: {
-    title: {
-      type: "string",
-      required: true,
-    },
-    description: {
-      type: "string",
-    },
+    title: { type: "string", required: true },
+    description: { type: "string" },
   },
   computedFields,
 }));
@@ -136,65 +143,4 @@ export default makeSource({
 });
 ```
 
-This file configures Contentlayer to look for Markdown files in the specified directories (`content/blog`, `content/authors`, `content/docs`, `content/guides`, `content/pages`). It also defines the different document types you use in your project along with the fields associated with each document type.
-
-You can customize this file according to your project's needs by adding new document types or adjusting existing fields as per your specific requirements.
-
-## Frontmatters
-
-Here's the list of all frontmatters available for each parts:
-
-<Steps>
-
-### Authors
-
-```md
----
-title: drew sepeczi
-avatar: /_static/avatars/me-coffee.jpg
-instagram: drew.sepeczi
----
-```
-
-### Blog
-
-```md
----
-title: Deploying Next.js Apps
-description: How to deploy your Next.js apps on Vercel.
-image: /_static/blog/blog-post-3.jpg
-date: "2025-01-02"
-authors:
-  - drewsepeczi
----
-```
-
-### Docs
-
-```md
----
-title: Database
-description: How to config your Neon database.
----
-```
-
-### Guides
-
-```md
----
-title: Build a blog using ContentLayer and MDX.
-description: Learn how to use ContentLayer to build a blog with Next.js
-date: 2025-11-18
----
-```
-
-### Pages
-
-```md
----
-title: Privacy
-description: The Privacy Policy for your app.
----
-```
-
-</Steps>
+This configuration ensures that your content is correctly parsed and available throughout your application.

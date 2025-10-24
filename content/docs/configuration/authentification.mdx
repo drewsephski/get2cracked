@@ -1,66 +1,83 @@
 ---
-title: Authentification
-description: How to config the authentification.
+title: Authentication with Clerk
+description: How to configure Clerk authentication for your SaaS application.
 ---
 
 <Callout type="note" twClass="mt-0">
-  The auth part is similar at the [authjs](https://authjs.dev/) documentation.
-  You can follow the official documentation
-  [here](https://authjs.dev/getting-started/installation#setup-environment) if
-  you want.
+  This guide provides step-by-step instructions for setting up Clerk authentication
+  in your Get Cracked Starter SaaS boilerplate. Clerk offers a comprehensive and easy-to-integrate
+  authentication solution.
 </Callout>
 
-<Callout type="danger" twClass="mt-3">
-  After upgrade Auth.js to v5: `NEXTAUTH_URL` has removed from `.env` file. Same
-  thing **in production**.
-</Callout>
+## 1. Create a Clerk Account
 
-## Update auth_secret variable
+If you don't already have one, sign up for a free Clerk account at [clerk.com](https://clerk.com/).
 
-The only environment variable that is mandatory is the `AUTH_SECRET`. This is a random value used by the library to encrypt tokens and email verification hashes. You can generate one via running:
+## 2. Obtain Clerk API Keys
 
-```bash
-npx auth secret
-```
+After creating your account and setting up a new application in Clerk, you will need to obtain your API keys:
 
-Alternatively, you can use the `openssl` CLI, `openssl rand -base64 33`.
+*   **Publishable Key**: This key is used on the client-side and typically starts with `pk_test_...` or `pk_live_...`.
+*   **Secret Key**: This key is used on the server-side and typically starts with `sk_test_...` or `sk_live_...`.
 
-Or this [link](https://generate-secret.vercel.app/32) for generate a random secret key.
+You can find these keys in your Clerk Dashboard under the "API Keys" section of your application.
 
-Then add it to your `.env` file:
+## 3. Configure Environment Variables
+
+Add the following environment variables to your `.env.local` file. Replace the placeholder values with your actual Clerk API keys.
 
 ```js title=".env.local"
-AUTH_SECRET = secret;
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_YOUR_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY=sk_test_YOUR_CLERK_SECRET_KEY
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
 ```
 
-## Update google client variables
+*   `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Your Clerk Publishable Key.
+*   `CLERK_SECRET_KEY`: Your Clerk Secret Key.
+*   `NEXT_PUBLIC_CLERK_SIGN_IN_URL`: The URL for your sign-in page.
+*   `NEXT_PUBLIC_CLERK_SIGN_UP_URL`: The URL for your sign-up page.
+*   `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL`: The URL to redirect to after a successful sign-in.
+*   `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL`: The URL to redirect to after a successful sign-up.
 
-In this section, you can update these variables:
+## 4. Integrate Clerk into Your Application
 
-```js title=".env.local"
-GOOGLE_CLIENT_ID = your_secret_client_id.apps.googleusercontent.com;
-GOOGLE_CLIENT_SECRET = your_secret_client;
+The Get Cracked Starter SaaS boilerplate is pre-configured to work seamlessly with Clerk. Ensure your main application file (e.g., `app/layout.tsx` or `pages/_app.tsx` for Next.js) is wrapped with the `<ClerkProvider>` component.
+
+```tsx title="app/layout.tsx"
+import { ClerkProvider } from '@clerk/nextjs';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
+  );
+}
 ```
 
-### Video explanation
+### Protect Routes
 
-Watch a youtube video from [CodeWithAntonio](https://www.youtube.com/@codewithantonio) on how to configure the environment variables for NextAuth with Google authentication.
+To protect routes and ensure only authenticated users can access them, you can use Clerk's middleware. The boilerplate should already have a `middleware.ts` file configured.
 
-<iframe
-  className="mt-6 aspect-video w-full"
-  src="https://www.youtube.com/embed/1MTyCvS05V4"
-  title="Next Auth V5 - Advanced Guide (2024)"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-  referrerPolicy="strict-origin-when-cross-origin"
-  allowFullScreen
-></iframe>
+```typescript title="middleware.ts"
+import { authMiddleware } from "@clerk/nextjs";
 
-- GoogleAuth **local** config at [3:24:30](https://www.youtube.com/watch?v=1MTyCvS05V4&t=12270s)
-- Update GoogleAuth after **deployment** at [7:52:31](https://www.youtube.com/watch?v=1MTyCvS05V4&t=12270s)
+export default authMiddleware({
+  publicRoutes: ["/", "/sign-in", "/sign-up", "/api/webhook"], // Define your public routes here
+});
 
-### Google config for this repo
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
 
-<img
-  className="mt-4 overflow-hidden rounded-lg border"
-  src="/_static/docs/gg-auth-config.jpg"
-/>
+Adjust the `publicRoutes` array to include any pages that should be accessible without authentication.
+
+## 5. Next Steps
+
+With Clerk configured, you can now utilize Clerk's various components and hooks throughout your application to manage user sessions, display user information, and more. Refer to the [Clerk documentation](https://clerk.com/docs) for advanced usage.

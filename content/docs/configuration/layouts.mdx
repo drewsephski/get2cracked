@@ -3,11 +3,11 @@ title: Dashboard Layout Options
 description: Choose between two different layout options for your dashboard.
 ---
 
-Explore the different layout options available for customizing your dashboard. You have the choice between two layouts for the dashboard.
+This documentation guides you through customizing your dashboard layouts using the Get Cracked Starter SaaS boilerplate template. You have the flexibility to choose between two distinct layout options, designed for easy integration and customization.
 
 ## Centered Sidebar and Main Content
 
-In this layout, both the sidebar and the main content are centered in the middle of the page, like **Stripe dashboard**.
+This layout centers both the sidebar and the main content, providing a clean and organized presentation. It's ideal for dashboards where a balanced visual flow is preferred.
 
 ```tsx
 <MaxWidthWrapper className="max-w-[1650px] px-0">
@@ -36,7 +36,7 @@ In this layout, both the sidebar and the main content are centered in the middle
 
 ## Fixed Sidebar with Centered Main Content
 
-In this layout, the sidebar is fixed to the left side of the window, while only the main content is centered on the page. This gives for a more **traditional look**. This is the default layout.
+This layout features a sidebar fixed to the left side of the window, with only the main content area being centered. This traditional arrangement is the default for the template, offering a familiar and efficient user experience.
 
 ```tsx
 <div className="relative flex min-h-screen w-full">
@@ -65,4 +65,27 @@ In this layout, the sidebar is fixed to the left side of the window, while only 
 </div>
 ```
 
-Feel free to choose the layout that best fits your design preferences and user experience goals.
+## Switching Between Layouts
+
+To switch between the "Centered Sidebar and Main Content" and "Fixed Sidebar with Centered Main Content" layouts, you will typically modify a configuration setting within your template.
+
+1.  **Locate the Configuration File**: The layout preference is often managed in a central configuration file, such as `config.ts` or `layout.config.ts`, usually found in the `config/` or `lib/` directory of your project.
+2.  **Modify the Layout Setting**: Inside this file, look for a variable or object related to layout settings. For example, you might find a setting like `defaultLayout: 'fixed'` or `layoutStyle: 'centered'`.
+3.  **Update the Value**: Change the value to reflect your desired layout. For instance, if you want the "Centered Sidebar and Main Content" layout, you might change the setting to `defaultLayout: 'centered'` or `layoutStyle: 'stripe-like'`.
+
+Here's an example of what the configuration might look like (actual implementation may vary):
+
+```typescript
+// config/layout.config.ts (example)
+
+export const dashboardConfig = {
+  // ... other configurations
+  layout: {
+    style: 'fixed', // or 'centered'
+  },
+  // ...
+};
+```
+
+After saving your changes, the application should automatically update to use the newly selected layout. If you don't see the changes immediately, you might need to restart your development server.
+Choose the layout that best suits your application's design and user experience needs. The Get Cracked Starter template provides these options to ensure your dashboard is both functional and aesthetically pleasing.
