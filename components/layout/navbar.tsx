@@ -45,11 +45,8 @@ export function NavBar({ scroll = false }: NavBarProps) {
       className={`sticky top-0 z-40 flex w-full justify-center bg-background/60 backdrop-blur-xl transition-all ${scroll ? (scrolled ? "border-b" : "bg-transparent") : "border-b"
         }`}
     >
-      <MaxWidthWrapper
-        className="flex h-14 items-center justify-between py-4"
-        large={documentation}
-      >
-        <div className="flex gap-6 md:gap-10">
+      <MaxWidthWrapper className="flex h-14 items-center justify-between py-4">
+        <div className="flex gap-4 md:gap-10">
           <Link href="/" className="flex items-center space-x-1.5">
             <Icons.logo className="size-7 text-blue-500" />
             <span className="font-urban text-xl font-bold">
@@ -78,7 +75,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
           ) : null}
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2">
           {/* Theme toggle - always visible */}
           <ThemeToggle />
 
@@ -104,7 +101,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
           ) : null}
 
           {user ? (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               <Link
                 href={user.publicMetadata?.role === "ADMIN" ? "/admin" : "/dashboard"}
                 className="hidden md:block"
@@ -156,7 +153,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
           ) : (
             /* Show sign in/sign up buttons for all unauthenticated users */
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               <Button
                 className="group hidden gap-2 px-5 md:flex"
                 variant="outline"
