@@ -17,10 +17,8 @@
     "postinstall": "prisma generate",
     "email": "email dev --dir emails --port 3333",
     "create-stripe-products": "tsx scripts/create-stripe-products.ts",
-    "test:codebase-email": "tsx scripts/test-codebase-email.ts",
-    "test:codebase-email-preview": "tsx scripts/test-codebase-email-preview.ts",
-    "test:codebase-email-simple": "tsx scripts/simple-email-preview.ts",
-    "test:simple-email": "tsx scripts/test-simple-email.ts",
+    "test:download": "tsx scripts/test-download.ts",
+    "test:zip": "tsx scripts/create-codebase-zip.ts",
     "deploy:netlify": "netlify deploy --prod",
     "deploy:netlify:preview": "netlify deploy --build",
     "deploy:check": "tsx scripts/deploy-helper.ts"

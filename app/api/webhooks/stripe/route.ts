@@ -4,19 +4,6 @@ import Stripe from "stripe";
 import { env } from "@/env.mjs";
 import { prisma } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
-import { sendCodebaseEmail } from "@/actions/send-codebase-email";
-
-const PRO_PRICE_IDS = [
-  env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID,
-  env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID,
-];
-
-const BUSINESS_PRICE_IDS = [
-  env.NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID,
-  env.NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID,
-];
-
-const ALL_CODEBASE_PRICE_IDS = [...PRO_PRICE_IDS, ...BUSINESS_PRICE_IDS];
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -59,47 +46,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // Check if this is a subscription that includes codebase access
-    const isProPlan = PRO_PRICE_IDS.includes(subscription.items.data[0].price.id);
-    const isBusinessPlan = BUSINESS_PRICE_IDS.includes(subscription.items.data[0].price.id);
-    const includesCodebase = isProPlan || isBusinessPlan;
-
-    if (includesCodebase && session?.metadata?.userId) {
-      console.log(`🎉 ${isBusinessPlan ? 'Business' : 'Pro'} plan subscription detected for user ${session.metadata.userId}`);
-
-      try {
-        // Get user details from database
-        const user = await prisma.user.findUnique({
-          where: { id: session.metadata.userId },
-        });
-
-        if (user) {
-          // Determine plan name and features for email
-          const planName = isBusinessPlan ? "Business Plan" : "Pro Plan";
-          const planFeatures = isBusinessPlan
-            ? "Complete SaaS starter with AI features"
-            : "Complete SaaS starter template";
-
-          // Send codebase delivery email
-          const emailResult = await sendCodebaseEmail({
-            customerEmail: user.email!,
-            customerName: user.name || user.email!,
-            planName,
-            userId: user.id,
-          });
-
-          if (emailResult.success) {
-            console.log(`✅ Codebase delivery email sent to ${user.email} for ${planName}`);
-          } else {
-            console.error(`❌ Failed to send codebase email:`, emailResult.error);
-          }
-        } else {
-          console.error(`❌ User not found: ${session.metadata.userId}`);
-        }
-      } catch (error) {
-        console.error(`❌ Error sending codebase email:`, error);
-      }
-    }
+    console.log(`✅ Subscription created for user ${session.metadata?.userId}`);
   }
 
   if (event.type === "invoice.payment_succeeded") {

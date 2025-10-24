@@ -74,7 +74,6 @@ Congratulations on your purchase! This is your complete SaaS starter template.
 - ✅ Payment processing (Stripe)
 - ✅ Database (Prisma + PostgreSQL)
 - ✅ Beautiful UI (Shadcn/ui)
-- ✅ Email system (Resend)
 - ✅ Production deployment ready
 - ✅ Comprehensive documentation
 

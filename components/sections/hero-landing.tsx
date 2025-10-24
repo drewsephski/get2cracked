@@ -7,8 +7,8 @@ import { TypewriterText } from "@/components/ui/typewriter-text";
 
 export default function HeroLanding() {
   return (
-    <section className="space-y-6 py-12 sm:py-20 lg:py-20">
-      <div className="container flex max-w-5xl flex-col items-center gap-5 text-center">
+    <section className="space-y-4 py-8 sm:space-y-6 sm:py-20 lg:py-20">
+      <div className="container flex max-w-5xl flex-col items-center gap-4 text-center sm:gap-5">
         <Link
           href="/dashboard"
           className={cn(
