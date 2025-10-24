@@ -20,9 +20,9 @@ interface DocPageProps {
 }
 
 async function getDocFromParams(params: DocPageProps["params"]) {
-  // If no slug provided, redirect to root docs page
+  // If no slug provided, let the explicit /docs page handle it
   if (!params.slug || params.slug.length === 0) {
-    redirect("/docs");
+    return null;
   }
 
   const slug = params.slug.join("/");
@@ -51,9 +51,11 @@ export async function generateMetadata({
 export async function generateStaticParams(): Promise<
   DocPageProps["params"][]
 > {
-  return allDocs.map((doc) => ({
-    slug: doc.slugAsParams.split("/"),
-  }));
+  return allDocs
+    .filter((doc) => doc.slugAsParams !== "index") // Exclude root docs page
+    .map((doc) => ({
+      slug: doc.slugAsParams.split("/"),
+    }));
 }
 
 export default async function DocPage({ params }: DocPageProps) {

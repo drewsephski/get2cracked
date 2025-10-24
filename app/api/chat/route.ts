@@ -2,6 +2,8 @@
 import { NextRequest } from 'next/server';
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { getCurrentUser } from '@/lib/session';
+import { checkAndDeductCredits } from '@/lib/credits';
 
 // Allow streaming responses up to 30 seconds (Vercel recommended pattern)
 export const maxDuration = 30;
@@ -29,6 +31,28 @@ function getOpenRouter() {
 }
 
 export async function POST(req: NextRequest) {
+  // Get current user
+  const user = await getCurrentUser();
+
+  if (!user?.id) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Check and deduct credits for free users
+  const creditCheck = await checkAndDeductCredits(user.id, 1);
+
+  if (!creditCheck.success) {
+    return new Response(JSON.stringify({
+      error: creditCheck.message || 'Insufficient credits to use AI chat'
+    }), {
+      status: 402, // Payment Required
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const openrouter = getOpenRouter();
 
   // Client may pass ?model=... in the URL to override default

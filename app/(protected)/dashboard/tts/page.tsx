@@ -18,6 +18,9 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Separator } from "@/components/ui/separator";
 import { Volume2, Mic, Info as InfoIcon, Sparkles, AlertCircle, CheckCircle2, Loader2, Info, Trash2, Copy, Play, StopCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { CreditBadge } from "@/components/ui/credit-badge";
+import { useUserCredits } from "@/hooks/use-user-credits";
+import { toast } from "sonner";
 
 type VoiceRow = {
   id: string;
@@ -58,6 +61,9 @@ export default function TtsPage() {
   // Audio scheduling
   const audioCtxRef = useRef<AudioContext | null>(null);
   const cursorTimeRef = useRef<number>(0);
+
+  // Credit state
+  const { credits, isPaid, loading: creditsLoading } = useUserCredits();
 
   // Setup WebAudio
   useEffect(() => {
@@ -133,6 +139,12 @@ export default function TtsPage() {
   };
 
   async function handleStream() {
+    // Check if user has credits (only for free users)
+    if (!isPaid && credits <= 0) {
+      toast.error('You have no credits remaining. Please upgrade your plan to continue using text-to-speech.');
+      return;
+    }
+
     if (!audioCtxRef.current) return;
 
     // Stop any existing stream
@@ -165,7 +177,15 @@ export default function TtsPage() {
 
       if (!res.ok || !res.body) {
         const err = await safeJson(res);
-        appendLog(`Stream failed: ${err?.error || res.statusText}`);
+
+        if (res.status === 402) {
+          toast.error('Insufficient credits to use text-to-speech. Please upgrade your plan.');
+          appendLog(`Credit error: ${err?.error || res.statusText}`);
+        } else {
+          toast.error('Failed to generate speech. Please try again.');
+          appendLog(`Stream failed: ${err?.error || res.statusText}`);
+        }
+
         setIsStreaming(false);
         return;
       }
@@ -185,7 +205,11 @@ export default function TtsPage() {
       }
       appendLog("Stream ended.");
     } catch (e: any) {
-      appendLog("Exception: " + String(e));
+      if (e.name === 'AbortError') {
+        appendLog("Stream aborted by user");
+      } else {
+        appendLog("Exception: " + String(e));
+      }
     } finally {
       setIsStreaming(false);
     }
@@ -229,10 +253,16 @@ export default function TtsPage() {
   }
 
   async function handleAskAI() {
+    // Check if user has credits (only for free users)
+    if (!isPaid && credits <= 0) {
+      toast.error('You have no credits remaining. Please upgrade your plan to continue using AI chat.');
+      return;
+    }
+
     setAiLoading(true);
     setAiOutput("");
     try {
-      const res = await fetch("/api/ai/chat", {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -245,7 +275,15 @@ export default function TtsPage() {
 
       if (!res.ok || !res.body) {
         const err = await safeJson(res);
-        setAiOutput("AI error: " + (err?.error || res.statusText));
+
+        if (res.status === 402) {
+          toast.error('Insufficient credits to use AI chat. Please upgrade your plan.');
+          setAiOutput("Credit error: " + (err?.error || res.statusText));
+        } else {
+          toast.error('Failed to generate AI response. Please try again.');
+          setAiOutput("AI error: " + (err?.error || res.statusText));
+        }
+
         setAiLoading(false);
         return;
       }
@@ -388,13 +426,18 @@ export default function TtsPage() {
   return (
     <TooltipProvider>
       <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-3xl font-bold text-transparent">
-            AI Text to Speech
-          </h1>
-          <p className="text-muted-foreground">
-            Transform text into natural-sounding speech with our advanced AI voices. Perfect for content creators, developers, and anyone who needs high-quality voice synthesis.
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-3xl font-bold text-transparent">
+              AI Text to Speech
+            </h1>
+            <p className="text-muted-foreground">
+              Transform text into natural-sounding speech with our advanced AI voices. Perfect for content creators, developers, and anyone who needs high-quality voice synthesis.
+            </p>
+          </div>
+          {!creditsLoading && (
+            <CreditBadge credits={credits} isPaid={isPaid} />
+          )}
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">

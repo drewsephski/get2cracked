@@ -61,7 +61,7 @@ export type SubscriptionPlan = {
 };
 
 export type UserSubscriptionPlan = SubscriptionPlan &
-  Pick<User, "stripeCustomerId" | "stripeSubscriptionId" | "stripePriceId"> & {
+  Pick<User, "stripeCustomerId" | "stripeSubscriptionId" | "stripePriceId" | "credits"> & {
     stripeCurrentPeriodEnd: number;
     isPaid: boolean;
     interval: "month" | "year" | null;

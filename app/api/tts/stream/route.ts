@@ -1,10 +1,34 @@
 // app/api/tts/stream/route.ts
 import { NextRequest } from "next/server";
 import { hume } from "@/lib/hume";
+import { getCurrentUser } from '@/lib/session';
+import { checkAndDeductCredits } from '@/lib/credits';
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
+  // Get current user
+  const user = await getCurrentUser();
+
+  if (!user?.id) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Check and deduct credits for free users
+  const creditCheck = await checkAndDeductCredits(user.id, 1);
+
+  if (!creditCheck.success) {
+    return new Response(JSON.stringify({
+      error: creditCheck.message || 'Insufficient credits to use text-to-speech'
+    }), {
+      status: 402, // Payment Required
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const body = await req.json();
     const {

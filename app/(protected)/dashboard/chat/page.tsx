@@ -28,6 +28,8 @@ import {
   PromptInputTools,
 } from '@/components/ai-elements/prompt-input';
 import { Action, Actions } from '@/components/ai-elements/actions';
+import { CreditBadge } from '@/components/ui/credit-badge';
+import { useUserCredits } from '@/hooks/use-user-credits';
 import { Fragment, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { Response } from '@/components/ai-elements/response';
@@ -61,7 +63,17 @@ const ChatBotDemo = () => {
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
-  const { messages, sendMessage, status, regenerate } = useChat();
+  const { credits, isPaid, loading: creditsLoading } = useUserCredits();
+
+  const { messages, sendMessage, status, regenerate, error } = useChat({
+    onError: (error) => {
+      if (error?.message?.includes('402') || error?.message?.includes('Insufficient credits')) {
+        toast.error('Insufficient credits to send message. Please upgrade your plan or purchase more credits.');
+      } else {
+        toast.error('Failed to send message. Please try again.');
+      }
+    }
+  });
 
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -71,10 +83,16 @@ const ChatBotDemo = () => {
       return;
     }
 
+    // Check if user has credits (only for free users)
+    if (!isPaid && credits <= 0) {
+      toast.error('You have no credits remaining. Please upgrade your plan to continue using AI chat.');
+      return;
+    }
+
     sendMessage(
-      { 
+      {
         text: message.text || 'Sent with attachments',
-        files: message.files 
+        files: message.files
       },
       {
         body: {
@@ -88,6 +106,19 @@ const ChatBotDemo = () => {
 
   return (
     <div className="flex h-[90vh] w-full flex-col overflow-hidden">
+      {/* Header with credit badge */}
+      <div className="flex items-center justify-between border-b bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div>
+          <h1 className="text-lg font-semibold">AI Chat</h1>
+          <p className="text-sm text-muted-foreground">
+            Chat with AI models and get instant responses
+          </p>
+        </div>
+        {!creditsLoading && (
+          <CreditBadge credits={credits} isPaid={isPaid} />
+        )}
+      </div>
+
       <div className="flex h-full min-h-0 flex-col">
         <Conversation className="min-h-0 flex-1">
           <ConversationContent className="h-full overflow-y-auto">

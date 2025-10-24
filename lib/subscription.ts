@@ -19,6 +19,7 @@ export async function getUserSubscriptionPlan(
       stripeCurrentPeriodEnd: true,
       stripeCustomerId: true,
       stripePriceId: true,
+      credits: true,
     },
   })
 

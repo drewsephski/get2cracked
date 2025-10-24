@@ -9,6 +9,7 @@ export const pricingData: SubscriptionPlan[] = [
       "Up to 100 monthly posts",
       "Basic analytics and reporting",
       "Access to standard templates",
+      "3 free credits for AI chat and text-to-speech",
     ],
     limitations: [
       "No priority access to new features.",
@@ -35,6 +36,7 @@ export const pricingData: SubscriptionPlan[] = [
       "Priority customer support",
       "Email support and documentation",
       "Deploy to production in minutes",
+      "Unlimited AI chat and text-to-speech",
     ],
     limitations: [
       "No AI chat interface included",
@@ -62,6 +64,7 @@ export const pricingData: SubscriptionPlan[] = [
       "Personalized onboarding and account management",
       "Complete admin dashboard",
       "Multi-tenant architecture ready",
+      "Unlimited AI chat and text-to-speech",
     ],
     limitations: [],
     prices: {

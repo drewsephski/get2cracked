@@ -37,6 +37,7 @@ export default async function BillingPage() {
     stripeSubscriptionId: null,
     stripePriceId: null,
     stripeCurrentPeriodEnd: null,
+    credits: 3, // Default credits for free users
   };
 
   return (
