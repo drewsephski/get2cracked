@@ -1,0 +1,95 @@
+---
+title: Dashboard Layout Options
+description: Choose between two different layout options for your dashboard.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+This documentation guides you through customizing your dashboard layouts using the Get Cracked Starter SaaS boilerplate template. You have the flexibility to choose between two distinct layout options, designed for easy integration and customization.
+
+## Centered Sidebar and Main Content
+
+This layout centers both the sidebar and the main content, providing a clean and organized presentation. It's ideal for dashboards where a balanced visual flow is preferred.
+
+```tsx
+<MaxWidthWrapper className="max-w-[1650px] px-0">
+  <div className="relative flex min-h-screen w-full">
+    <DashboardSidebar links={filteredLinks} />
+
+    <div className="flex flex-1 flex-col">
+      <header className="bg-background sticky top-0 z-50 flex h-14 items-center gap-3 px-4 lg:h-[60px] xl:px-10">
+        <MobileSheetSidebar links={filteredLinks} />
+
+        <div className="w-full flex-1">
+          <SearchCommand links={filteredLinks} />
+        </div>
+
+        <ModeToggle />
+        <UserAccountNav />
+      </header>
+
+      <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 xl:px-10">
+        {children}
+      </main>
+    </div>
+  </div>
+</MaxWidthWrapper>
+```
+
+## Fixed Sidebar with Centered Main Content
+
+This layout features a sidebar fixed to the left side of the window, with only the main content area being centered. This traditional arrangement is the default for the template, offering a familiar and efficient user experience.
+
+```tsx
+<div className="relative flex min-h-screen w-full">
+  <DashboardSidebar links={filteredLinks} />
+
+  <div className="flex flex-1 flex-col">
+    <header className="bg-background sticky top-0 z-50 flex h-14 px-4 lg:h-[60px] xl:px-8">
+      <MaxWidthWrapper className="flex max-w-7xl items-center gap-x-3 px-0">
+        <MobileSheetSidebar links={filteredLinks} />
+
+        <div className="w-full flex-1">
+          <SearchCommand links={filteredLinks} />
+        </div>
+
+        <ModeToggle />
+        <UserAccountNav />
+      </MaxWidthWrapper>
+    </header>
+
+    <main className="flex-1 p-4 xl:px-8">
+      <MaxWidthWrapper className="flex h-full max-w-7xl flex-col gap-4 px-0 lg:gap-6">
+        {children}
+      </MaxWidthWrapper>
+    </main>
+  </div>
+</div>
+```
+
+## Switching Between Layouts
+
+To switch between the "Centered Sidebar and Main Content" and "Fixed Sidebar with Centered Main Content" layouts, you will typically modify a configuration setting within your template.
+
+1.  **Locate the Configuration File**: The layout preference is often managed in a central configuration file, such as `config.ts` or `layout.config.ts`, usually found in the `config/` or `lib/` directory of your project.
+2.  **Modify the Layout Setting**: Inside this file, look for a variable or object related to layout settings. For example, you might find a setting like `defaultLayout: 'fixed'` or `layoutStyle: 'centered'`.
+3.  **Update the Value**: Change the value to reflect your desired layout. For instance, if you want the "Centered Sidebar and Main Content" layout, you might change the setting to `defaultLayout: 'centered'` or `layoutStyle: 'stripe-like'`.
+
+Here's an example of what the configuration might look like (actual implementation may vary):
+
+```typescript
+// config/layout.config.ts (example)
+
+export const dashboardConfig = {
+  // ... other configurations
+  layout: {
+    style: 'fixed', // or 'centered'
+  },
+  // ...
+};
+```
+
+After saving your changes, the application should automatically update to use the newly selected layout. If you don't see the changes immediately, you might need to restart your development server.
+Choose the layout that best suits your application's design and user experience needs. The Get Cracked Starter template provides these options to ensure your dashboard is both functional and aesthetically pleasing.

@@ -1,0 +1,55 @@
+---
+title: Installation
+description: How to install the project.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+<Steps>
+
+### Setup Project
+
+Once you download the zip file for your Get Cracked Starter SaaS boilerplate, extract it and open the project in your preferred IDE (e.g., Cursor, Windsurf, VS Code).
+
+### Install Dependencies
+
+Navigate into the project directory and install the necessary dependencies:
+
+```bash
+cd get-cracked
+pnpm install
+```
+
+### Create a `.env` file
+
+Copy/paste the `.env.example` in the `.env` file:
+
+```md title=".env"
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+AUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_OAUTH_TOKEN=
+
+DATABASE_URL=
+
+RESEND_API_KEY=
+EMAIL_FROM=
+
+STRIPE_API_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID=
+NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID=
+NEXT_PUBLIC_STRIPE_BUSINESS_MONTHLY_PLAN_ID=
+NEXT_PUBLIC_STRIPE_BUSINESS_YEARLY_PLAN_ID=
+```
+
+### Configuration part
+
+Let's check the configuration part for update all environment variables before use `pnpm run dev`.
+
+</Steps>

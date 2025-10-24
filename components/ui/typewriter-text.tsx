@@ -16,7 +16,7 @@ interface TypewriterTextProps {
 export function TypewriterText({
   words = ["Hello", "World", "Typewriter", "Effect"],
   className,
-  cursorClassName = "inline-block ml-1 h-6 w-1.5 bg-foreground",
+  cursorClassName = "inline-block ml-1 h-6 w-1 bg-foreground",
   typingSpeed = 150,
   deletingSpeed = 50,
   delayBetweenWords = 1500,
@@ -32,7 +32,7 @@ export function TypewriterText({
     if (!words.length) return
 
     const currentWord = words[currentIndex % words.length]
-    
+
     if (isDeleting) {
       // Deleting text
       if (currentText.length > 0) {
@@ -82,7 +82,7 @@ export function TypewriterText({
 
   return (
     <div className={cn("inline-flex items-center", className)}>
-      <span>{currentText}</span>
+      <span className="min-w-0">{currentText}</span>
       <span
         className={cn(
           "animate-pulse",

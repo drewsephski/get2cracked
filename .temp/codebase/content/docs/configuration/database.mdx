@@ -1,0 +1,42 @@
+---
+title: Database
+description: How to config your Neon database.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+This template uses **Neon** as its recommended database solution. Neon offers a generous free tier for development and testing. You can find more information on their [pricing page](https://neon.tech/pricing).
+
+## Steps
+
+<Steps>
+
+### Create Neon account
+
+If you don't have a Neon account, follow their simple steps [here](https://neon.tech/docs/get-started-with-neon/signing-up) to create one.
+
+### Copy database url
+
+After creating a project on Neon, navigate to the "Connection Details" section. Select `Prisma` from the dropdown, then go to the `env` tab to find your `DATABASE_URL`.
+
+<Callout type="warning">
+  <b>Don't forget</b> to reveal the information hidden behind the stars using the eye icon to get the full connection string.
+</Callout>
+
+Paste in your `.env` file.
+
+```js
+DATABASE_URL = "postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname";
+```
+
+### Push migrations
+
+You can push the migrations on your database with the cli.
+
+```bash
+npx prisma db push
+```
+
+</Steps>

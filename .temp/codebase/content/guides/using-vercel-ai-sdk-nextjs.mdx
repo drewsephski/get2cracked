@@ -1,0 +1,582 @@
+---
+title: "Setting Up Vercel AI SDK in Next.js 14"
+description: "A comprehensive guide to implementing AI features in your Next.js application using the Vercel AI SDK, including streaming responses, React hooks, and provider integration."
+date: "2025-10-23"
+featured: true
+---
+
+<Callout>
+  This guide demonstrates how to integrate the Vercel AI SDK into your Next.js application, including streaming AI responses, using React hooks, and integrating with AI providers like OpenRouter.
+</Callout>
+
+## Introduction to Vercel AI SDK
+
+The Vercel AI SDK is a TypeScript toolkit that provides a unified interface for building AI-powered applications. It supports multiple AI providers, streaming responses, and React hooks for seamless integration with Next.js applications.
+
+Key features include:
+- **Unified API**: Consistent interface across different AI providers
+- **Streaming Support**: Real-time streaming of AI responses
+- **React Hooks**: Built-in hooks for client-side integration
+- **Type Safety**: Full TypeScript support
+- **Provider Agnostic**: Support for OpenAI, Anthropic, and many other providers
+
+## Installation
+
+### 1. Install Required Packages
+
+Install the core AI SDK and React integration:
+
+```bash
+npm install ai @ai-sdk/react
+# or
+yarn add ai @ai-sdk/react
+# or
+pnpm add ai @ai-sdk/react
+```
+
+### 2. Install AI Provider
+
+For this project, we're using OpenRouter which provides access to hundreds of models:
+
+```bash
+npm install @openrouter/ai-sdk-provider
+# or
+yarn add @openrouter/ai-sdk-provider
+# or
+pnpm add @openrouter/ai-sdk-provider
+```
+
+## Environment Configuration
+
+### 1. Update Environment Variables
+
+Add the following to your `.env.local` file:
+
+```env
+# OpenRouter Configuration
+OPENROUTER_API_KEY="sk-or-v1-your-openrouter-api-key"
+OPENROUTER_MODEL="x-ai/grok-4-fast:free"
+OPENROUTER_SITE_URL="https://yourdomain.com"
+OPENROUTER_APP_NAME="Your App Name"
+
+# Alternative providers (optional)
+OPENAI_API_KEY="sk-your-openai-api-key"
+ANTHROPIC_API_KEY="sk-ant-your-anthropic-api-key"
+```
+
+### 2. Update .env.example
+
+Update your `.env.example` file to include AI configuration:
+
+```env
+# AI Configuration
+OPENROUTER_API_KEY="sk-or-v1-..."
+OPENROUTER_MODEL="x-ai/grok-4-fast:free"
+OPENROUTER_SITE_URL="http://localhost:3000"
+OPENROUTER_APP_NAME="Next.js AI App"
+```
+
+## AI Configuration
+
+### 1. Create AI Configuration File
+
+Create `lib/ai.ts` to centralize your AI configuration:
+
+```typescript
+// lib/ai.ts
+import { OpenRouter } from "@openrouter/ai-sdk-provider";
+import { streamText } from "ai";
+
+if (!process.env.OPENROUTER_API_KEY) {
+  throw new Error("OPENROUTER_API_KEY is not set");
+}
+
+export const openrouter = new OpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY!,
+  // Optional: route metadata for OpenRouter
+  headers: {
+    'HTTP-Referer': process.env.OPENROUTER_SITE_URL ?? '',
+    'X-Title': process.env.OPENROUTER_APP_NAME ?? 'Next.js AI App',
+  },
+});
+
+export const defaultModel =
+  process.env.OPENROUTER_MODEL || "x-ai/grok-4-fast:free";
+
+// Helper to stream text with Vercel AI SDK via OpenRouter
+export const streamCompletion = async (
+  messages: { role: "user" | "system" | "assistant"; content: string }[]
+) => {
+  return streamText({
+    model: openrouter.chat(defaultModel),
+    messages,
+  });
+};
+```
+
+## API Routes
+
+### 1. Create Chat API Route
+
+Create `app/api/chat/route.ts` for handling chat requests:
+
+```typescript
+// app/api/chat/route.ts
+import { NextRequest } from 'next/server';
+import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
+
+// Factory for OpenRouter provider
+function getOpenRouter() {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    throw new Error('Missing OPENROUTER_API_KEY environment variable.');
+  }
+
+  const openrouter = createOpenRouter({
+    apiKey,
+    headers: {
+      'HTTP-Referer': process.env.OPENROUTER_SITE_URL ?? '',
+      'X-Title': process.env.OPENROUTER_APP_NAME ?? 'Next.js AI App',
+    },
+  });
+
+  return openrouter;
+}
+
+export async function POST(req: NextRequest) {
+  const openrouter = getOpenRouter();
+
+  // Client may pass ?model=... in the URL to override default
+  const { searchParams } = new URL(req.url);
+  const modelOverride = searchParams.get('model') ?? undefined;
+  const modelName =
+    modelOverride || process.env.OPENROUTER_MODEL || 'x-ai/grok-4-fast:free';
+
+  // Parse UI messages payload
+  const { messages }: { messages: UIMessage[] } = await req.json();
+
+  // Convert UI messages to model messages
+  const modelMessages = convertToModelMessages(messages);
+
+  // System prompt keeps responses focused and safe
+  const systemPrompt =
+    'You are a helpful, concise assistant for a Next.js app. Respond with clear, short answers.';
+
+  // Stream text back out using the selected model
+  const result = streamText({
+    model: openrouter.chat(modelName),
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...modelMessages,
+    ],
+    // Optional: tune parameters
+    temperature: 0.7,
+    maxTokens: 1000,
+  });
+
+  return result.toUIMessageStreamResponse();
+}
+```
+
+## React Components
+
+### 1. Create Chat Component
+
+Create a chat component using the `useChat` hook:
+
+```tsx
+// components/chat.tsx
+'use client';
+
+import { useChat } from '@ai-sdk/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
+
+export default function Chat() {
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    error,
+  } = useChat({
+    api: '/api/chat',
+  });
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <Card className="p-6">
+        <div className="space-y-4 h-96 overflow-y-auto">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`p-3 rounded-lg ${
+                message.role === 'user'
+                  ? 'bg-blue-100 ml-12'
+                  : 'bg-gray-100 mr-12'
+              }`}
+            >
+              <div className="font-semibold">
+                {message.role === 'user' ? 'You' : 'AI'}
+              </div>
+              <div className="mt-1">{message.content}</div>
+            </div>
+          ))}
+        </div>
+
+        {error && (
+          <div className="text-red-500 p-3 bg-red-50 rounded-lg mt-4">
+            Error: {error.message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex gap-2 mt-4">
+          <Input
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Type your message..."
+            disabled={isLoading}
+            className="flex-1"
+          />
+          <Button type="submit" disabled={isLoading || !input.trim()}>
+            {isLoading ? 'Sending...' : 'Send'}
+          </Button>
+        </form>
+      </Card>
+    </div>
+  );
+}
+```
+
+### 2. Add Chat to a Page
+
+Use the chat component in your pages:
+
+```tsx
+// app/chat/page.tsx
+import Chat from '@/components/chat';
+
+export default function ChatPage() {
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">AI Chat</h1>
+      <Chat />
+    </div>
+  );
+}
+```
+
+## Advanced Usage
+
+### 1. Using Different Models
+
+You can switch between different models by passing the model parameter:
+
+```typescript
+// API call with specific model
+const response = await fetch('/api/chat?model=anthropic/claude-3.5-sonnet', {
+  method: 'POST',
+  body: JSON.stringify({ messages }),
+});
+```
+
+### 2. Server-Side Generation
+
+For server-side AI generation:
+
+```tsx
+// app/api/generate/route.ts
+import { generateText } from 'ai';
+import { openrouter } from '@/lib/ai';
+
+export async function POST(req: Request) {
+  const { prompt } = await req.json();
+
+  const { text } = await generateText({
+    model: openrouter.chat('x-ai/grok-4-fast:free'),
+    prompt,
+  });
+
+  return Response.json({ text });
+}
+```
+
+### 3. Tool Calling
+
+Enable tool calling for more advanced AI interactions:
+
+```typescript
+// app/api/chat-with-tools/route.ts
+import { streamText } from 'ai';
+import { openrouter } from '@/lib/ai';
+import { z } from 'zod';
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: openrouter.chat('x-ai/grok-4-fast:free'),
+    messages,
+    tools: {
+      getWeather: {
+        description: 'Get the current weather for a city',
+        parameters: z.object({
+          city: z.string().describe('The city to get weather for'),
+        }),
+        execute: async ({ city }) => {
+          // Your weather API integration
+          return { temperature: 72, condition: 'sunny' };
+        },
+      },
+    },
+  });
+
+  return result.toUIMessageStreamResponse();
+}
+```
+
+## React Hooks
+
+### 1. useChat Hook
+
+The `useChat` hook provides a complete chat interface:
+
+```tsx
+const {
+  messages,        // Array of messages
+  input,           // Current input value
+  handleInputChange, // Handle input changes
+  handleSubmit,    // Handle form submission
+  isLoading,       // Loading state
+  error,           // Error state
+  reload,          // Reload last message
+  stop,            // Stop streaming
+} = useChat({
+  api: '/api/chat',
+  onResponse,      // Response callback
+  onError,         // Error callback
+});
+```
+
+### 2. useCompletion Hook
+
+For simple text completion:
+
+```tsx
+import { useCompletion } from '@ai-sdk/react';
+
+const { completion, complete, isLoading } = useCompletion({
+  api: '/api/completion',
+});
+```
+
+## Error Handling
+
+### 1. Client-Side Error Handling
+
+```tsx
+'use client';
+
+import { useChat } from '@ai-sdk/react';
+
+export default function ChatWithErrorHandling() {
+  const { messages, input, handleInputChange, handleSubmit, error } = useChat({
+    api: '/api/chat',
+    onError: (error) => {
+      console.error('Chat error:', error);
+      // Handle error (show toast, retry, etc.)
+    },
+  });
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>Something went wrong: {error.message}</p>
+        <button onClick={() => window.location.reload()}>
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    // Your chat UI
+  );
+}
+```
+
+### 2. Server-Side Error Handling
+
+```typescript
+// app/api/chat/route.ts
+export async function POST(req: NextRequest) {
+  try {
+    const openrouter = getOpenRouter();
+    // ... rest of the implementation
+  } catch (error) {
+    console.error('AI API Error:', error);
+    return Response.json(
+      { error: 'Failed to process request' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Deployment Considerations
+
+### 1. Environment Variables
+
+Make sure to set your environment variables in your deployment platform:
+
+**Vercel:**
+- Add `OPENROUTER_API_KEY` to your Vercel project settings
+- Make sure it's available in both development and production
+
+**Netlify:**
+- Add environment variables in Site Settings > Environment Variables
+
+### 2. Rate Limiting
+
+Consider implementing rate limiting for your AI endpoints:
+
+```typescript
+// middleware.ts or in your API route
+import { NextRequest } from 'next/server';
+
+// Simple rate limiting example
+const rateLimit = new Map();
+
+export async function POST(req: NextRequest) {
+  const ip = req.ip || 'unknown';
+  const now = Date.now();
+  const windowMs = 60000; // 1 minute
+  const maxRequests = 10;
+
+  if (!rateLimit.has(ip)) {
+    rateLimit.set(ip, { count: 1, resetTime: now + windowMs });
+  } else {
+    const userLimit = rateLimit.get(ip);
+    if (now > userLimit.resetTime) {
+      userLimit.count = 1;
+      userLimit.resetTime = now + windowMs;
+    } else if (userLimit.count >= maxRequests) {
+      return Response.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 }
+      );
+    } else {
+      userLimit.count++;
+    }
+  }
+
+  // Continue with your AI logic...
+}
+```
+
+## Best Practices
+
+### 1. Streaming vs Non-Streaming
+
+- Use streaming for chat interfaces (better UX)
+- Use non-streaming for simple completions or when you need the full response
+
+### 2. Model Selection
+
+- Start with cost-effective models for development
+- Use more powerful models for production based on your needs
+- Consider latency vs quality trade-offs
+
+### 3. Prompt Engineering
+
+- Use clear, specific system prompts
+- Structure your messages properly
+- Test different prompts for better results
+
+### 4. Security
+
+- Validate user inputs
+- Implement rate limiting
+- Monitor API usage and costs
+- Don't expose sensitive information in prompts
+
+## Testing
+
+### 1. Unit Testing
+
+```typescript
+// lib/ai.test.ts
+import { streamCompletion } from './ai';
+
+describe('AI Functions', () => {
+  it('should stream completion successfully', async () => {
+    const messages = [{ role: 'user', content: 'Hello' }];
+    const result = await streamCompletion(messages);
+    expect(result).toBeDefined();
+  });
+});
+```
+
+### 2. Integration Testing
+
+Test your API routes:
+
+```typescript
+// app/api/chat/route.test.ts
+import { NextRequest } from 'next/server';
+
+describe('/api/chat', () => {
+  it('should handle chat requests', async () => {
+    const request = new NextRequest('http://localhost:3000/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: 'Test' }]
+      }),
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(200);
+  });
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Missing API Key**
+   - Ensure `OPENROUTER_API_KEY` is set in your environment
+   - Check that the key is valid and has sufficient credits
+
+2. **Streaming Issues**
+   - Verify your API route returns `toUIMessageStreamResponse()`
+   - Check browser console for WebSocket or streaming errors
+
+3. **Model Not Found**
+   - Verify the model name in your OpenRouter configuration
+   - Check OpenRouter documentation for available models
+
+4. **Rate Limiting**
+   - OpenRouter has rate limits; consider implementing client-side caching
+   - Monitor your usage in the OpenRouter dashboard
+
+### Getting Help
+
+- Check the [Vercel AI SDK Documentation](https://sdk.vercel.ai/)
+- Visit the [OpenRouter Documentation](https://openrouter.ai/docs)
+- Join the [Vercel AI SDK Discord](https://discord.gg/vercel-ai-sdk)
+- Review the [AI SDK GitHub Issues](https://github.com/vercel/ai/issues)
+
+## Conclusion
+
+The Vercel AI SDK provides a powerful and flexible way to integrate AI capabilities into your Next.js application. With streaming support, React hooks, and provider abstraction, you can quickly build sophisticated AI-powered features.
+
+This setup with OpenRouter gives you access to hundreds of AI models, making it easy to experiment and find the right model for your use case.
+
+For more advanced features, explore the AI SDK's tool calling, structured outputs, and multi-modal capabilities.

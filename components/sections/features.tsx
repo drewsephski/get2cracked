@@ -9,7 +9,7 @@ import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 export default function Features() {
   return (
     <section>
-      <div className="pb-6 pt-28">
+      <div className="py-16 sm:py-20 lg:py-28">
         <MaxWidthWrapper>
           <HeaderSection
             label="AI-Powered Features"
@@ -17,7 +17,7 @@ export default function Features() {
             subtitle="Transform your operations with intelligent automation, predictive analytics, and smart tools designed for modern entrepreneurs."
           />
 
-          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
             {features.map((feature) => {
               const Icon = Icons[feature.icon || "nextjs"];
               return (
