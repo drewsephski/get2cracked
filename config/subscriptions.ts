@@ -97,7 +97,7 @@ export const comparePlans: PlansRow[] = [
     pro: true,
     business: true,
     enterprise: "Custom",
-    tooltip: "Pro and Business tiers include the complete production-ready SaaS boilerplate.",
+    tooltip: "Pro and Business tiers include the complete codebase with full source code.",
   },
   {
     feature: "AI Chat Interface",
