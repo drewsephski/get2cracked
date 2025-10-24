@@ -9,8 +9,8 @@ import { PricingCards } from "@/components/pricing/pricing-cards";
 import { PricingFaq } from "@/components/pricing/pricing-faq";
 
 export const metadata = constructMetadata({
-  title: "Pricing – Save Thousands with Get Cracked Starter",
-  description: "Get instant access to a production-ready SaaS boilerplate. Pro includes the complete codebase, Business adds preconfigured AI features. Skip months of development and save $50K+ in costs.",
+  title: "Pricing – Get Cracked SaaS Boilerplate",
+  description: "Get instant access to a production-ready SaaS boilerplate. Pro tier includes complete codebase with full source code. Business tier adds preconfigured AI integration. Skip months of development and save $50K+ in costs.",
 });
 
 export default async function PricingPage() {
