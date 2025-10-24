@@ -16,7 +16,7 @@ export default function HeroLanding() {
             "group relative inline-flex items-center px-4 py-2 text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10",
           )}
         >
-          <span className="mr-2"><Icons.nextjs className="size-4" /></span>Try AI-Powered Dashboard
+          <span className="mr-2"><Icons.nextjs className="size-4" /></span>Try AI-Powered SaaS
           <div className="ml-1">
             <Icons.arrowRight
               className={`size-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:rotate-45`}
@@ -25,10 +25,10 @@ export default function HeroLanding() {
         </Link>
 
         <h1 className="text-balance font-bricolage text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-[66px]">
-          Build amazing{" "}
+          Launch your SaaS{" "}
           <span className="text-gradient_blue">
             <TypewriterText 
-              words={["websites", "apps", "experiences", "solutions"]}
+              words={["10x faster", "today", "profitably", "successfully"]}
               className="inline-block min-w-[150px] text-left"
               cursorClassName="ml-1 h-10 w-1.5 bg-gradient-to-b from-blue-500 to-blue-600"
               typingSpeed={100}
@@ -44,8 +44,7 @@ export default function HeroLanding() {
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          Build your next project using Next.js, Prisma, Neon, Clerk,
-          Resend, React Email, Shadcn/ui, Stripe.
+          This premium template provides a robust, production-ready foundation, meticulously engineered to save you thousands in developer costs and accelerate your time to market.
         </p>
 
         <div

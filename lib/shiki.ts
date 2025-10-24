@@ -3,7 +3,7 @@
 // Avoid importing this file from client components or edge runtime routes.
 
 export type Highlighter = {
-  codeToHtml: (code: string, options: { lang: string }) => Promise<string>;
+  codeToHtml: (code: string, options: { lang: string; theme: string }) => Promise<string>;
 };
 
 let highlighterPromise: Promise<Highlighter> | null = null;
@@ -14,11 +14,11 @@ export async function getHighlighter(): Promise<Highlighter> {
       const shiki = await import('shiki'); // ESM dynamic import
       // Use a popular theme; adjust as needed
       const highlighter = await shiki.getHighlighter({
-        themes: ['github-dark', 'github-light'],
+        themes: ['github-dark', 'github-light', 'dracula', 'nord', 'monokai', 'solarized-dark'],
         langs: ['tsx', 'typescript', 'javascript', 'json', 'bash', 'css', 'html', 'python', 'markdown'],
       });
       return {
-        codeToHtml: async (code, { lang }) => highlighter.codeToHtml(code, { lang, theme: 'github-dark' }),
+        codeToHtml: async (code, { lang, theme }) => highlighter.codeToHtml(code, { lang, theme }),
       };
     })();
   }

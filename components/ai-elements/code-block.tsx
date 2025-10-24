@@ -30,7 +30,7 @@ export const CodeBlock = ({
   <CodeBlockContext.Provider value={{ code }}>
     <div
       className={cn(
-        "relative w-full overflow-hidden rounded-md border bg-background text-foreground",
+        "w-fill relative overflow-hidden rounded-md border text-foreground",
         className
       )}
       {...props}
@@ -38,10 +38,10 @@ export const CodeBlock = ({
       <div className="relative">
         <div
           dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-          className="shiki-highlighted-code" // Add a class for potential styling
+          className="shiki-highlighted-code" // Increased padding for better readability
         />
         {children && (
-          <div className="absolute right-2 top-2 flex items-center gap-2">
+          <div className="absolute -right-2 -top-2 flex items-center ">
             {children}
           </div>
         )}
