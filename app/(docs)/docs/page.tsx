@@ -13,53 +13,39 @@ import { Metadata } from "next";
 
 import { constructMetadata, getBlurDataURL } from "@/lib/utils";
 
-interface DocPageProps {
-  params: {
-    slug: string[];
-  };
-}
+async function getDocFromParams() {
+  const doc = allDocs.find((doc) => doc.slugAsParams === "");
 
-async function getDocFromParams(params: DocPageProps["params"]) {
-  // If no slug provided, redirect to root docs page
-  if (!params.slug || params.slug.length === 0) {
-    redirect("/docs");
+  if (!doc) {
+    throw new Error("Root docs page not found");
   }
-
-  const slug = params.slug.join("/");
-  const doc = allDocs.find((doc) => doc.slugAsParams === slug);
-
-  if (!doc) return null;
 
   return doc;
 }
 
-export async function generateMetadata({
-  params,
-}: DocPageProps): Promise<Metadata> {
-  const doc = await getDocFromParams(params);
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const doc = await getDocFromParams();
+    const { title, description } = doc;
 
-  if (!doc) return {};
-
-  const { title, description } = doc;
-
-  return constructMetadata({
-    title: `${title} – SaaS Starter`,
-    description: description,
-  });
+    return constructMetadata({
+      title: `${title} – Get Cracked Starter`,
+      description: description,
+    });
+  } catch {
+    return constructMetadata({
+      title: "Documentation – Get Cracked Starter",
+      description: "Documentation for the Get Cracked Starter SaaS boilerplate",
+    });
+  }
 }
 
-export async function generateStaticParams(): Promise<
-  DocPageProps["params"][]
-> {
-  return allDocs.map((doc) => ({
-    slug: doc.slugAsParams.split("/"),
-  }));
-}
+export default async function DocsPage() {
+  let doc;
 
-export default async function DocPage({ params }: DocPageProps) {
-  const doc = await getDocFromParams(params);
-
-  if (!doc) {
+  try {
+    doc = await getDocFromParams();
+  } catch {
     notFound();
   }
 

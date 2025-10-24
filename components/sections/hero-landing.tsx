@@ -44,7 +44,7 @@ export default function HeroLanding() {
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          This premium template provides a robust, production-ready foundation, meticulously engineered to save you thousands in developer costs and accelerate your time to market.
+          Skip the months of setup and thousands in development costs. Launch your SaaS today with our battle-tested foundation and start growing your business faster.
         </p>
 
         <div
