@@ -210,7 +210,7 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
   return (
     <MaxWidthWrapper>
       <section className="flex flex-col items-center text-center">
-        <HeaderSection label="Pricing" title="Start at full speed !" />
+        <HeaderSection label="Pricing" title="Choose Your Development Path" />
 
         <div className="mb-4 mt-10 flex items-center gap-5">
           <ToggleGroup
@@ -245,15 +245,14 @@ export function PricingCards({ userId, subscriptionPlan }: PricingCardsProps) {
         </div>
 
         <p className="mt-3 text-balance text-center text-base text-muted-foreground">
-          Email{" "}
+          Need help choosing the right plan or have questions about deployment?{" "}
           <a
             className="font-medium text-primary hover:underline"
             href="mailto:drewsepeczi@gmail.com"
           >
-            drewsepeczi@gmail.com
+            Contact us
           </a>{" "}
-           to contact our support team.
-          <br />
+          for personalized guidance.
         </p>
       </section>
     </MaxWidthWrapper>

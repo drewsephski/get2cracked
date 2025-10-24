@@ -61,7 +61,7 @@ export function BillingInfo({ userSubscriptionPlan }: BillingInfoProps) {
                   Ready to unlock more?
                 </p>
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Upgrade to get unlimited AI chat and text-to-speech, plus the complete codebase with advanced features.
+                  Upgrade to Pro for full codebase access, or choose Business for a complete AI-powered solution ready to deploy immediately.
                 </p>
               </div>
             </div>
@@ -79,7 +79,9 @@ export function BillingInfo({ userSubscriptionPlan }: BillingInfoProps) {
                   You&apos;re all set!
                 </p>
                 <p className="text-sm text-green-700 dark:text-green-300">
-                  Enjoy unlimited access to all AI features and premium support.
+                  {title === "Pro"
+                    ? "Enjoy full access to the complete codebase—customize, extend, and deploy your SaaS platform."
+                    : "Enjoy your complete AI-powered SaaS solution with all features preconfigured and ready to use."}
                 </p>
               </div>
             </div>

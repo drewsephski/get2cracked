@@ -10,33 +10,39 @@ import { HeaderSection } from "../shared/header-section";
 const pricingFaqData = [
   {
     id: "item-1",
-    question: "What is the cost of the free plan?",
+    question: "What makes your free plan valuable?",
     answer:
-      "Our free plan is completely free, with no monthly or annual charges. It's a great way to get started and explore our basic features.",
+      "Get started immediately with basic access and see how our platform can streamline your development workflow. Perfect for evaluating the core functionality before upgrading.",
   },
   {
     id: "item-2",
-    question: "How much does the Basic Monthly plan cost?",
+    question: "Why choose Pro over free?",
     answer:
-      "The Basic Monthly plan is priced at $15 per month. It provides access to our core features and is billed on a monthly basis.",
+      "For $12/month, unlock enhanced features and priority support. Ideal for individual developers who need more robust tools and faster response times for their projects.",
   },
   {
     id: "item-3",
-    question: "What is the price of the Pro Monthly plan?",
+    question: "What's the Pro plan advantage?",
     answer:
-      "The Pro Monthly plan is available for $25 per month. It offers advanced features and is billed on a monthly basis for added flexibility.",
+      "Pro gives you full access to our complete codebase at $12/month. Dive deep into the source code, customize it to your needs, and build exactly what you want without AI limitations.",
   },
   {
     id: "item-4",
-    question: "Do you offer any annual subscription plans?",
+    question: "How much can I save with annual plans?",
     answer:
-      "Yes, we offer annual subscription plans for even more savings. The Basic Annual plan is $144 per year, and the Pro Annual plan is $300 per year.",
+      "Save big with annual billing—get 2 months free! Pro Annual: $240/year (vs $300). Lock in the best rates for long-term development.",
   },
   {
     id: "item-5",
-    question: "Is there a trial period for the paid plans?",
+    question: "What about Business plans?",
     answer:
-      "We offer a 14-day free trial for both the Pro Monthly and Pro Annual plans. It's a great way to experience all the features before committing to a paid subscription.",
+      "Business plans deliver the entire codebase preconfigured with AI functionality—ready to deploy out of the box. Complete solution for teams that need production-ready AI features immediately.",
+  },
+  {
+    id: "item-6",
+    question: "Need something custom?",
+    answer:
+      "We build custom solutions for enterprise clients. Get personalized implementations, dedicated support, and features tailored to your specific business requirements.",
   },
 ];
 
@@ -46,9 +52,7 @@ export function PricingFaq() {
       <HeaderSection
         label="FAQ"
         title="Frequently Asked Questions"
-        subtitle="Explore our comprehensive FAQ to find quick answers to common
-          inquiries. If you need further assistance, don't hesitate to
-          contact us for personalized help."
+        subtitle="Get answers about our pricing and discover how our codebase access can accelerate your development. From basic tools to full AI integration, find your perfect development solution."
       />
 
       <Accordion type="single" collapsible className="my-12 w-full">

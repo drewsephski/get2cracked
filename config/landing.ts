@@ -81,42 +81,42 @@ export const testimonials: TestimonialType[] = [
   {
     name: "Sarah Chen",
     job: "Startup Founder",
-    image: "https://randomuser.me/api/portraits/women/1.jpg",
+    image: "/_static/blog/blog-post-1.jpg",
     review:
       "Get Cracked saved me 3 months of development time and over $30K in developer costs. Everything was pre-configured - authentication, payments, database, email - I just customized the branding and launched. As a non-technical founder, this was exactly what I needed to get to market fast.",
   },
   {
     name: "Marcus Rodriguez",
     job: "Solo Entrepreneur",
-    image: "https://randomuser.me/api/portraits/men/2.jpg",
+    image: "/_static/blog/blog-post-2.jpg",
     review:
       "I tried building from scratch and it was a nightmare. Get Cracked had everything ready to go - Stripe integration, user management, beautiful UI components. I saved thousands and launched in weeks instead of months. The documentation was incredible too.",
   },
   {
     name: "Amanda Foster",
     job: "Small Business Owner",
-    image: "https://randomuser.me/api/portraits/women/3.jpg",
+    image: "/_static/illustrations/work-from-home.jpg",
     review:
       "The pre-built authentication and payment systems alone saved me $15K in development costs. Everything worked perfectly out of the box. I just focused on my unique features while the boilerplate handled all the complex infrastructure. Worth every penny.",
   },
   {
     name: "David Kim",
     job: "Tech Startup CEO",
-    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    image: "/_static/blog/blog-post-3.jpg",
     review:
       "As a technical founder, I still chose Get Cracked because it had production-ready code with proper security, error handling, and scalability. I could have built it myself but why reinvent the wheel? Saved 2 months of development time and launched with confidence.",
   },
   {
     name: "Lisa Thompson",
     job: "Agency Owner",
-    image: "https://randomuser.me/api/portraits/women/5.jpg",
+    image: "/_static/blog/blog-post-4.jpg",
     review:
       "My clients need SaaS apps fast. Get Cracked lets me deliver professional, scalable applications in weeks instead of months. The enterprise-grade architecture and beautiful UI components impress clients every time. It's become my secret weapon for rapid deployment.",
   },
   {
     name: "Ryan Patel",
     job: "Indie Developer",
-    image: "https://randomuser.me/api/portraits/men/6.jpg",
+    image: "/_static/illustrations/work-from-home.jpg",
     review:
       "The developer experience is incredible - TypeScript, modern tooling, comprehensive documentation. I customized the entire app in days, not weeks. The code quality is so high that I learned best practices just by reading through it. Absolutely worth the investment.",
   },
