@@ -102,7 +102,10 @@ export type ToolInputProps = ComponentProps<"div"> & {
 export const ToolInput = async ({ className, input, ...props }: ToolInputProps) => {
   const highlighter = await getHighlighter();
   const codeString = JSON.stringify(input, null, 2);
-  const highlightedHtml = await highlighter.codeToHtml(codeString, { lang: "json" });
+  const highlightedHtml = await highlighter.codeToHtml(codeString, {
+    lang: "json",
+    theme: 'nord' // Using 'nord' as the theme as per instructions
+  });
 
   return (
     <div className={cn("space-y-2 overflow-hidden p-4", className)} {...props}>
@@ -151,7 +154,10 @@ export const ToolOutput = async ({
     language = "text";
   }
 
-  const highlightedHtml = await highlighter.codeToHtml(codeString, { lang: language });
+  const highlightedHtml = await highlighter.codeToHtml(codeString, {
+    lang: language,
+    theme: 'nord' // Using 'nord' as the theme as per instructions
+  });
 
   Output = (
     <CodeBlock code={codeString} highlightedHtml={highlightedHtml} />
