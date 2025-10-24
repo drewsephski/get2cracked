@@ -12,31 +12,31 @@ const pricingFaqData = [
     id: "item-1",
     question: "What is the cost of the free plan?",
     answer:
-      "Our free plan is completely free, with no monthly or annual charges. It's a great way to get started and explore our basic features.",
+      "Our free Starter plan provides access to documentation, community support, and basic UI components. Upgrade to Pro or Business to get the complete source code and AI features.",
   },
   {
     id: "item-2",
-    question: "How much does the Basic Monthly plan cost?",
+    question: "What does the Pro plan include?",
     answer:
-      "The Basic Monthly plan is priced at $15 per month. It provides access to our core features and is billed on a monthly basis.",
+      "The Pro plan ($15/month) includes the complete production-ready SaaS codebase with Next.js 14, authentication (Clerk), payments (Stripe), database (Prisma), email system, and UI components. Everything you need to launch your SaaS quickly.",
   },
   {
     id: "item-3",
-    question: "What is the price of the Pro Monthly plan?",
+    question: "What additional features does the Business plan offer?",
     answer:
-      "The Pro Monthly plan is available for $25 per month. It offers advanced features and is billed on a monthly basis for added flexibility.",
+      "The Business plan ($30/month) includes everything in Pro plus preconfigured AI features: GPT-4o chat interface, Hume AI text-to-speech, AI content generation, web search integration, and advanced analytics. Perfect for AI-powered SaaS applications.",
   },
   {
     id: "item-4",
     question: "Do you offer any annual subscription plans?",
     answer:
-      "Yes, we offer annual subscription plans for even more savings. The Basic Annual plan is $144 per year, and the Pro Annual plan is $300 per year.",
+      "Yes! Save 20% with annual billing. The Pro Annual plan is $144/year (vs $180 monthly), and the Business Annual plan is $300/year (vs $360 monthly). Get the same complete codebase and features with significant savings.",
   },
   {
     id: "item-5",
     question: "Is there a trial period for the paid plans?",
     answer:
-      "We offer a 14-day free trial for both the Pro Monthly and Pro Annual plans. It's a great way to experience all the features before committing to a paid subscription.",
+      "We offer a 7-day money-back guarantee on all paid plans. If the boilerplate doesn't meet your needs, contact us within 7 days for a full refund. This gives you time to explore the codebase and ensure it fits your project requirements.",
   },
 ];
 

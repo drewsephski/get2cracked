@@ -25,7 +25,7 @@ async function createStripeProducts() {
     console.log('📦 Creating Pro product...');
     const proProduct = await stripe.products.create({
       name: 'Pro Plan',
-      description: 'Unlock Advanced Features - Up to 500 monthly posts, Advanced analytics, Business templates, Priority support',
+      description: 'Complete SaaS Codebase - Production-ready Next.js 14 boilerplate with authentication, payments, database, email system, and UI components. Everything you need to launch your SaaS.',
     });
 
     // Create Pro Monthly Price
@@ -56,7 +56,7 @@ async function createStripeProducts() {
     console.log('📦 Creating Business product...');
     const businessProduct = await stripe.products.create({
       name: 'Business Plan',
-      description: 'For Power Users - Unlimited posts, Real-time analytics, Custom branding, 24/7 support, Personalized onboarding',
+      description: 'Codebase + AI Integration - Complete boilerplate plus preconfigured AI features: GPT-4o chat, Hume AI text-to-speech, content generation, web search, and advanced analytics. Launch with AI from day one.',
     });
 
     // Create Business Monthly Price
