@@ -13,39 +13,56 @@ import { Metadata } from "next";
 
 import { constructMetadata, getBlurDataURL } from "@/lib/utils";
 
-async function getDocFromParams() {
-  const doc = allDocs.find((doc) => doc.slugAsParams === "");
+interface DocPageProps {
+  params: {
+    slug: string[];
+  };
+}
 
-  if (!doc) {
-    throw new Error("Root docs page not found");
+async function getDocFromParams(params: DocPageProps["params"]) {
+  // If no slug provided, get the root docs page
+  if (!params.slug || params.slug.length === 0) {
+    const doc = allDocs.find((doc) => doc.slugAsParams === "");
+    return doc || null;
   }
+
+  const slug = params.slug.join("/");
+  const doc = allDocs.find((doc) => doc.slugAsParams === slug);
+
+  if (!doc) return null;
 
   return doc;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const doc = await getDocFromParams();
-    const { title, description } = doc;
+export async function generateMetadata({
+  params,
+}: DocPageProps): Promise<Metadata> {
+  const doc = await getDocFromParams(params);
 
-    return constructMetadata({
-      title: `${title} – Get Cracked Starter`,
-      description: description,
-    });
-  } catch {
-    return constructMetadata({
-      title: "Documentation – Get Cracked Starter",
-      description: "Documentation for the Get Cracked Starter SaaS boilerplate",
-    });
-  }
+  if (!doc) return {};
+
+  const { title, description } = doc;
+
+  return constructMetadata({
+    title: `${title} – SaaS Starter`,
+    description: description,
+  });
 }
 
-export default async function DocsPage() {
-  let doc;
+export async function generateStaticParams(): Promise<
+  DocPageProps["params"][]
+> {
+  return allDocs
+    .filter((doc) => doc.slugAsParams !== "index") // Exclude root docs page
+    .map((doc) => ({
+      slug: doc.slugAsParams.split("/"),
+    }));
+}
 
-  try {
-    doc = await getDocFromParams();
-  } catch {
+export default async function DocPage({ params }: DocPageProps) {
+  const doc = await getDocFromParams(params);
+
+  if (!doc) {
     notFound();
   }
 
