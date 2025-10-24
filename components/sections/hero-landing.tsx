@@ -26,8 +26,8 @@ export default function HeroLanding() {
 
         <h1 className="text-balance font-bricolage text-2xl font-extrabold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-[66px]">
           Launch your SaaS{" "}
-          <span className="text-gradient_blue">
-            <TypewriterText 
+          <span className="text-gradient_blue hidden sm:inline-block">
+            <TypewriterText
               words={["10x faster", "today", "profitably", "successfully"]}
               className="inline-block w-fit text-left text-3xl sm:min-w-[100px] sm:text-4xl md:min-w-[150px] md:text-5xl lg:text-6xl xl:text-[66px]"
               cursorClassName="ml-1 h-6 sm:h-8 md:h-10 w-1 bg-gradient-to-b from-blue-500 to-blue-600"
