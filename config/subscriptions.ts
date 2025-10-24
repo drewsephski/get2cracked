@@ -15,6 +15,7 @@ export const pricingData: SubscriptionPlan[] = [
       "Limited customer support",
       "No custom branding",
       "Limited access to business resources.",
+      "Codebase access not included",
     ],
     prices: {
       monthly: 0,
@@ -27,17 +28,17 @@ export const pricingData: SubscriptionPlan[] = [
   },
   {
     title: "Pro",
-    description: "Unlock Advanced Features",
+    description: "Complete codebase with full source code",
     benefits: [
-      "Up to 500 monthly posts",
-      "Advanced analytics and reporting",
-      "Access to business templates",
+      "Complete production-ready SaaS codebase",
+      "Next.js, Prisma, Stripe, Clerk, AI SDK integration",
       "Priority customer support",
-      "Exclusive webinars and training.",
+      "Email support and documentation",
+      "Deploy to production in minutes",
     ],
     limitations: [
-      "No custom branding",
-      "Limited access to business resources.",
+      "No AI chat interface included",
+      "No AI voice generation pre-configured.",
     ],
     prices: {
       monthly: 15,
@@ -50,13 +51,17 @@ export const pricingData: SubscriptionPlan[] = [
   },
   {
     title: "Business",
-    description: "For Power Users",
+    description: "Complete codebase with full source code + Preconfigured AI integration",
     benefits: [
-      "Unlimited posts",
-      "Real-time analytics and reporting",
-      "Access to all templates, including custom branding",
+      "Complete production-ready SaaS codebase",
+      "Preconfigured AI chat interface (OpenRouter)",
+      "Advanced AI elements and components",
+      "Text-to-speech functionality",
+      "Content management system",
       "24/7 business customer support",
-      "Personalized onboarding and account management.",
+      "Personalized onboarding and account management",
+      "Complete admin dashboard",
+      "Multi-tenant architecture ready",
     ],
     limitations: [],
     prices: {
@@ -85,6 +90,22 @@ export const comparePlans: PlansRow[] = [
     business: true,
     enterprise: "Custom",
     tooltip: "All plans include basic analytics for tracking performance.",
+  },
+  {
+    feature: "Complete SaaS Codebase",
+    starter: false,
+    pro: true,
+    business: true,
+    enterprise: "Custom",
+    tooltip: "Pro and Business tiers include the complete production-ready SaaS boilerplate.",
+  },
+  {
+    feature: "AI Chat Interface",
+    starter: false,
+    pro: false,
+    business: true,
+    enterprise: "Custom",
+    tooltip: "Business tier includes preconfigured AI chat with OpenRouter integration.",
   },
   {
     feature: "Custom Branding",

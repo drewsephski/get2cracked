@@ -10,7 +10,7 @@ import { PricingFaq } from "@/components/pricing/pricing-faq";
 
 export const metadata = constructMetadata({
   title: "Pricing – Save Thousands with Get Cracked Starter",
-  description: "Launch your SaaS 10x faster with pre-configured pricing plans. Everything ready to deploy - authentication, payments, database, and more. Skip months of development and save $50K+ in costs.",
+  description: "Get instant access to a production-ready SaaS boilerplate. Pro includes the complete codebase, Business adds preconfigured AI features. Skip months of development and save $50K+ in costs.",
 });
 
 export default async function PricingPage() {
