@@ -104,7 +104,7 @@ function checkDeploymentReadiness() {
   console.log('4. ⏳ Configure OAuth credentials for production in Clerk Dashboard');
   console.log('5. ⏳ Update webhook endpoints in Clerk Dashboard');
   console.log('6. ⏳ Configure DNS records in Clerk Dashboard');
-  console.log('7. ⏳ Update NEXT_PUBLIC_APP_URL to production domain');
+  console.log('7. ⏳ Update NEXT_PUBLIC_APP_URL to production domain (getcracked.lol)');
   console.log('8. ⏳ Deploy certificates in Clerk Dashboard');
 
   console.log('\n🔗 Netlify Commands:');
@@ -135,11 +135,11 @@ function checkWebhookEvents() {
   });
 
   console.log('\n💡 Webhook URL format:');
-  console.log('   https://your-netlify-site.netlify.app/api/webhooks/stripe');
+  console.log('   https://getcracked.lol/api/webhooks/stripe');
 }
 
 function generateWebhookTestCommand() {
-  const webhookUrl = 'https://your-netlify-site.netlify.app/api/webhooks/stripe';
+  const webhookUrl = 'https://getcracked.lol/api/webhooks/stripe';
   console.log('\n🧪 Test webhook with Stripe CLI:');
   console.log(`   stripe listen --forward-to ${webhookUrl}`);
   console.log(`   stripe trigger ${webhookUrl}`);
@@ -172,7 +172,7 @@ function printProductionDeploymentSteps() {
   console.log('   - Verify domain ownership');
 
   console.log('\n7. Environment Variables:');
-  console.log('   - Update NEXT_PUBLIC_APP_URL to production domain');
+  console.log('   - Update NEXT_PUBLIC_APP_URL to production domain (getcracked.lol)');
   console.log('   - Set authorizedParties in middleware for security');
 }
 

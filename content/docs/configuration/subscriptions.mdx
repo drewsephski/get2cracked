@@ -29,7 +29,7 @@ description: How to manage subscriptions with Stripe.
 Set up a webhook to receive important events from Stripe, such as successful payments and subscription changes.
 
 1.  **Add Endpoint:** Go to your Stripe Dashboard, navigate to [Developers > Webhooks](https://dashboard.stripe.com/webhooks), and click **"Add endpoint"**.
-2.  **Endpoint URL:** For local development, use a tool like the Stripe CLI to forward events to your local application. For production, enter your live domain's webhook URL (e.g., `https://yourdomain.com/api/webhooks/stripe`).
+2.  **Endpoint URL:** For local development, use a tool like the Stripe CLI to forward events to your local application. For production, enter your live domain's webhook URL (e.g., `https://getcracked.lol/api/webhooks/stripe`).
 3.  **Select Events:** Choose the following events to listen for:
     *   `checkout.session.completed`
     *   `customer.subscription.updated`
@@ -90,7 +90,7 @@ Once you've thoroughly tested your subscription flow in development, follow thes
 ### 2. Configure Live Webhook Endpoint
 
 1.  In your Stripe Dashboard, go to [Developers > Webhooks](https://dashboard.stripe.com/webhooks).
-2.  Add a new endpoint that points to your **production domain** (e.g., `https://yourdomain.com/api/webhooks/stripe`).
+2.  Add a new endpoint that points to your **production domain** (e.g., `https://getcracked.lol/api/webhooks/stripe`).
 3.  Select the same events as you did for your test webhook (e.g., `checkout.session.completed`, `customer.subscription.updated`, `invoice.payment_succeeded`, `customer.subscription.deleted`).
 4.  Copy the new **Signing secret** for this live webhook.
 5.  Update your production environment variables with the live webhook secret:
@@ -137,9 +137,9 @@ Your webhook endpoint (`/api/webhooks/stripe`) is configured to handle these cri
 *   **`customer.subscription.deleted`**: Processes subscription cancellations.
 
 <Callout type="info">
-  **Webhook URL Format**: `https://yourdomain.com/api/webhooks/stripe`
+  **Webhook URL Format**: `https://getcracked.lol/api/webhooks/stripe`
 
-  Remember to replace `yourdomain.com` with your actual production domain.
+  Remember to replace `getcracked.lol` with your actual production domain.
 </Callout>
 
 </Steps>
