@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent horizontal scrolling and improve mobile layout */
+@layer base {
+  html, body {
+    @apply max-w-full overflow-x-hidden;
+  }
+  
+  /* Smooth scrolling for mobile */
+  html {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent content from causing horizontal scroll */
+  img, video, canvas, svg, iframe {
+    @apply max-w-full h-auto;
+  }
+  
+  /* Improve text readability on mobile */
+  body {
+    @apply text-base leading-normal text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -101,3 +126,8 @@
     transform: translate(-50%, -50%) scale(0.9);
     }
   }
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}

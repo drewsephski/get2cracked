@@ -7,9 +7,36 @@ import InfoCard from "@/components/dashboard/info-card";
 import TransactionsList from "@/components/dashboard/transactions-list";
 
 export const metadata = constructMetadata({
-  title: "Admin – SaaS Starter",
+  title: "Admin – SaaS Starter",
   description: "Admin page for only admin management.",
 });
+
+const stats = [
+  { 
+    title: "Total Users",
+    value: "1,234",
+    change: "+12.3%",
+    changeType: "increase" as const
+  },
+  { 
+    title: "Active Subscriptions",
+    value: "876",
+    change: "+5.2%",
+    changeType: "increase" as const
+  },
+  { 
+    title: "Monthly Revenue",
+    value: "$12,345",
+    change: "-2.1%",
+    changeType: "decrease" as const
+  },
+  { 
+    title: "Active Trials",
+    value: "89",
+    change: "0%",
+    changeType: "neutral" as const
+  }
+];
 
 export default async function AdminPage() {
   const user = await getCurrentUser();
@@ -23,13 +50,20 @@ export default async function AdminPage() {
       />
       <div className="flex flex-col gap-5">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <InfoCard />
-          <InfoCard />
-          <InfoCard />
-          <InfoCard />
+          {stats.map((stat, index) => (
+            <InfoCard
+              key={index}
+              title={stat.title}
+              value={stat.value}
+              change={stat.change}
+              changeType={stat.changeType}
+            />
+          ))}
         </div>
-        <TransactionsList />
-        <TransactionsList />
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Recent Transactions</h3>
+          <TransactionsList />
+        </div>
       </div>
     </>
   );

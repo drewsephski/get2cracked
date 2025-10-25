@@ -4,11 +4,11 @@ import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
 
 export default function BentoGrid() {
   return (
-    <section className="py-32">
+    <section className="overflow-hidden py-16 md:py-32">
       <MaxWidthWrapper>
-        <div className="relative z-10 grid grid-cols-6 gap-3">
+        <div className="relative z-10 grid grid-cols-6 gap-3 px-2 sm:px-0">
           {/* First card */}
-          <div className="relative col-span-full flex overflow-hidden rounded-2xl border bg-background p-8 lg:col-span-2">
+          <div className="relative col-span-full flex overflow-hidden rounded-2xl border bg-background p-6 md:p-8 lg:col-span-2">
             <div className="relative m-auto size-fit">
               <div className="relative flex h-24 w-56 items-center">
                 <svg
@@ -33,7 +33,7 @@ export default function BentoGrid() {
           </div>
 
           {/* Second card */}
-          <div className="relative col-span-full overflow-hidden rounded-2xl border bg-background p-8 sm:col-span-3 lg:col-span-2">
+          <div className="relative col-span-full overflow-hidden rounded-2xl border bg-background p-6 sm:col-span-3 md:p-8 lg:col-span-2">
             <div>
               <div className="relative mx-auto flex aspect-square size-32 rounded-full border before:absolute before:-inset-2 before:rounded-full before:border before:bg-muted/20 dark:before:border-white/5">
                 <svg
@@ -100,7 +100,7 @@ export default function BentoGrid() {
           </div>
 
           {/* Third card */}
-          <div className="relative col-span-full overflow-hidden rounded-2xl border bg-background p-8 sm:col-span-3 lg:col-span-2">
+          <div className="relative col-span-full overflow-hidden rounded-2xl border bg-background p-6 sm:col-span-3 md:p-8 lg:col-span-2">
             <div>
               <div>
                 <svg
@@ -301,10 +301,10 @@ export default function BentoGrid() {
                 </div>
                 <div className="space-y-2">
                   <h2 className="text-lg font-medium text-foreground">
-                    Keep your loved ones safe
+                    Enterprise-Grade Security
                   </h2>
                   <p className="text-muted-foreground">
-                    Sacred trust through advanced privacy. Every interaction secure, compliant, and privacy-respecting.
+                    Built with security first. End-to-end encryption, role-based access controls, and SOC 2 compliance out of the box.
                   </p>
                 </div>
               </div>
@@ -312,15 +312,15 @@ export default function BentoGrid() {
                 <div className="relative flex h-full flex-col justify-center space-y-6 py-6">
                   <div className="relative flex w-[calc(50%+0.875rem)] items-center justify-end gap-2">
                     <span className="block h-fit rounded-md border bg-muted/50 px-2 py-1 text-xs">
-                      Glodie
+                      Threat Detection
                     </span>
                     <div className="size-7 ring-4 ring-background">
                       <Image
                         width={100}
                         height={100}
-                        className="size-full rounded-full border"
-                        src="https://randomuser.me/api/portraits/men/4.jpg"
-                        alt="fake-avatar"
+                        className="size-full rounded-md border object-cover"
+                        src="/_static/blog/blog-post-1.jpg"
+                        alt="Security dashboard showing threat detection"
                       />
                     </div>
                   </div>
@@ -329,26 +329,26 @@ export default function BentoGrid() {
                       <Image
                         width={100}
                         height={100}
-                        className="size-full rounded-full border"
-                        src="https://randomuser.me/api/portraits/men/6.jpg"
-                        alt="fake-avatar"
+                        className="size-full rounded-md border object-cover"
+                        src="/_static/blog/blog-post-2.jpg"
+                        alt="Data encryption visualization"
                       />
                     </div>
                     <span className="block h-fit rounded-md border bg-muted/50 px-2 py-1 text-xs">
-                      M. Irung
+                      Data Encryption
                     </span>
                   </div>
                   <div className="relative flex w-[calc(50%+0.875rem)] items-center justify-end gap-2">
                     <span className="block h-fit rounded-md border bg-muted/50 px-2 py-1 text-xs">
-                      B. Ng
+                      Secure Auth
                     </span>
                     <div className="size-7 ring-4 ring-background">
                       <Image
                         width={100}
                         height={100}
-                        className="size-full rounded-full border"
-                        src="https://randomuser.me/api/portraits/men/2.jpg"
-                        alt="fake-avatar"
+                        className="size-full rounded-md border object-cover"
+                        src="/_static/blog/blog-post-3.jpg"
+                        alt="Secure authentication flow"
                       />
                     </div>
                   </div>

@@ -12,8 +12,7 @@ import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { DocsSidebarNav } from "@/components/docs/sidebar-nav";
 import { Icons } from "@/components/shared/icons";
-
-import { ModeToggle } from "./mode-toggle";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 export function NavMobile() {
   const { user } = useUser();
@@ -55,11 +54,12 @@ export function NavMobile() {
 
       <nav
         className={cn(
-          "fixed inset-0 z-20 hidden w-full overflow-auto bg-background px-5 py-16 lg:hidden",
+          "fixed inset-0 z-20 hidden size-full overflow-y-auto bg-background px-4 py-16 lg:hidden",
+          "overscroll-contain",
           open && "block",
         )}
       >
-        <ul className="grid divide-y divide-muted">
+        <ul className="grid w-full divide-y divide-muted">
           {links && links.length > 0 && links.map(({ title, href }) => (
             <li key={href} className="py-3">
               <Link
@@ -127,12 +127,12 @@ export function NavMobile() {
           </div>
         ) : null}
 
-        <div className="mt-5 flex items-center justify-end space-x-4">
-          <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
+        <div className="mt-5 flex w-full items-center justify-end space-x-4 pr-2">
+          <Link href="https://github.com/drewsephski" target="_blank" rel="noreferrer">
             <Icons.gitHub className="size-6" />
             <span className="sr-only">GitHub</span>
           </Link>
-          <ModeToggle />
+          <AnimatedThemeToggler className="size-9 rounded-full border p-1.5 hover:bg-accent" />
         </div>
       </nav>
     </>

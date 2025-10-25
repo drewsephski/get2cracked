@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { useAuth, useUser } from "@clerk/nextjs";
@@ -15,27 +15,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DocsSearch } from "@/components/docs/search";
 import { ModalContext } from "@/components/modals/providers";
 import { Icons } from "@/components/shared/icons";
-import { LogOut, Menu } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { LogOut } from "lucide-react";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-} from "@/components/ui/sheet";
 
 interface NavBarProps {
   scroll?: boolean;
   large?: boolean;
+  user?: ReturnType<typeof useUser>["user"];
 }
 
-export function NavBar({ scroll = false }: NavBarProps) {
+export function NavBar({ scroll = false, user }: NavBarProps) {
   const scrolled = useScroll(50);
-  const { user } = useUser();
   const { signOut } = useAuth();
   const { setShowSignInModal, setShowSignUpModal } = useContext(ModalContext);
-  const [isOpen, setIsOpen] = useState(false);
 
   const selectedLayout = useSelectedLayoutSegment();
   const documentation = selectedLayout === "docs";
@@ -84,7 +77,8 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
         <div className="flex items-center space-x-2">
           {/* Desktop Navigation */}
-          <div className="hidden items-center space-x-2 md:flex">
+          <div className="hidden items-center space-x-4 md:flex">
+            <AnimatedThemeToggler className="size-9 rounded-full border p-1.5 hover:bg-accent" />
             {documentation ? (
               <div className="hidden flex-1 items-center space-x-4 sm:justify-end lg:flex">
                 <div className="hidden lg:flex lg:grow-0">
@@ -155,92 +149,6 @@ export function NavBar({ scroll = false }: NavBarProps) {
               </div>
             )}
           </div>
-
-          {/* Mobile Navigation */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden"
-                aria-label="Toggle menu"
-              >
-                <Menu className="size-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4">
-                {links.map((item, index) => (
-                  <SheetClose asChild key={index}>
-                    <Link
-                      href={item.disabled ? "#" : item.href}
-                      prefetch={true}
-                      className={cn(
-                        "flex items-center text-lg font-medium transition-colors hover:text-foreground/80",
-                        item.href.startsWith(`/${selectedLayout}`)
-                          ? "text-foreground"
-                          : "text-foreground/60",
-                        item.disabled && "cursor-not-allowed opacity-80",
-                      )}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.title}
-                    </Link>
-                  </SheetClose>
-                ))}
-                {user ? (
-                  <>
-                    <SheetClose asChild>
-                      <Link
-                        href={user.publicMetadata?.role === "ADMIN" ? "/admin" : "/dashboard"}
-                        className="flex items-center text-lg font-medium transition-colors hover:text-foreground/80"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                    </SheetClose>
-                    <Button
-                      variant="ghost"
-                      className="justify-start text-lg font-medium"
-                      onClick={() => {
-                        signOut({ redirectUrl: "/" });
-                        setIsOpen(false);
-                      }}
-                    >
-                      <LogOut className="mr-2 size-4" />
-                      Logout
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="ghost"
-                      className="justify-start text-lg font-medium"
-                      onClick={() => {
-                        setShowSignUpModal(true);
-                        setIsOpen(false);
-                      }}
-                    >
-                      Sign Up
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="justify-start text-lg font-medium"
-                      onClick={() => {
-                        setShowSignInModal(true);
-                        setIsOpen(false);
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                  </>
-                )}
-                <div className="mt-4">
-                  <ThemeToggle />
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
         </div>
       </MaxWidthWrapper>
     </header>

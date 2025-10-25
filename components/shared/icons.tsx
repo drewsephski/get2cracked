@@ -33,6 +33,30 @@ import {
   X,
 } from "lucide-react";
 
+import { 
+  SiStripe, 
+  SiClerk, 
+  SiPrisma, 
+  SiOpenai, 
+  SiSlack, 
+  SiDiscord, 
+  SiMongodb, 
+  SiRedis, 
+  SiVercel, 
+  SiGoogleanalytics, 
+  SiMailchimp, 
+  SiTwilio, 
+  SiHubspot, 
+  SiSalesforce, 
+  SiCloudinary, 
+  SiAmazon,
+  SiResend, 
+  SiTelegram, 
+  SiBentobox,
+  SiSendgrid,
+  SiMixpanel
+} from "react-icons/si";
+
 export type Icon = LucideIcon;
 
 export const Icons = {
@@ -82,23 +106,7 @@ export const Icons = {
       />
     </svg>
   ),
-  nextjs: ({ ...props }: LucideProps) => (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      data-prefix="fab"
-      data-icon="nextjs"
-      role="img"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 15 15"
-      {...props}
-    >
-      <path
-        fill="currentColor"
-        d="m4.5 4.5l.405-.293A.5.5 0 0 0 4 4.5zm3 9.5A6.5 6.5 0 0 1 1 7.5H0A7.5 7.5 0 0 0 7.5 15zM14 7.5A6.5 6.5 0 0 1 7.5 14v1A7.5 7.5 0 0 0 15 7.5zM7.5 1A6.5 6.5 0 0 1 14 7.5h1A7.5 7.5 0 0 0 7.5 0zm0-1A7.5 7.5 0 0 0 0 7.5h1A6.5 6.5 0 0 1 7.5 1zM5 12V4.5H4V12zm-.905-7.207l6.5 9l.81-.586l-6.5-9zM10 4v6h1V4z"
-      ></path>
-    </svg>
-  ),
+  nextjs: ({ ...props }: LucideProps) => <SiVercel {...props} />,
   help: HelpCircle,
   home: Home,
   laptop: Laptop,
@@ -113,6 +121,27 @@ export const Icons = {
   search: Search,
   settings: Settings,
   spinner: Loader2,
+  stripe: ({ ...props }: LucideProps) => <SiStripe {...props} />,
+  clerk: ({ ...props }: LucideProps) => <SiClerk {...props} />,
+  resend: ({ ...props }: LucideProps) => <SiResend {...props} />,
+  prisma: ({ ...props }: LucideProps) => <SiPrisma {...props} />,
+  vercel: ({ ...props }: LucideProps) => <SiVercel {...props} />,
+  openai: ({ ...props }: LucideProps) => <SiOpenai {...props} />,
+  googleAnalytics: ({ ...props }: LucideProps) => <SiGoogleanalytics {...props} />,
+  slack: ({ ...props }: LucideProps) => <SiSlack {...props} />,
+  discord: ({ ...props }: LucideProps) => <SiDiscord {...props} />,
+  awsS3: ({ ...props }: LucideProps) => <SiAmazon {...props} />,
+  cloudinary: ({ ...props }: LucideProps) => <SiCloudinary {...props} />,
+  hubspot: ({ ...props }: LucideProps) => <SiHubspot {...props} />,
+  salesforce: ({ ...props }: LucideProps) => <SiSalesforce {...props} />,
+  mailchimp: ({ ...props }: LucideProps) => <SiMailchimp {...props} />,
+  sendgrid: ({ ...props }: LucideProps) => <SiSendgrid {...props} />, // Using Mailchimp icon as a placeholder
+  mixpanel: ({ ...props }: LucideProps) => <SiMixpanel {...props} />, // Using Segment icon as a placeholder
+  segment: ({ ...props }: LucideProps) => <SiBentobox {...props} />,
+  telegram: ({ ...props }: LucideProps) => <SiTelegram {...props} />,
+  twilio: ({ ...props }: LucideProps) => <SiTwilio {...props} />,
+  mongodb: ({ ...props }: LucideProps) => <SiMongodb {...props} />,
+  redis: ({ ...props }: LucideProps) => <SiRedis {...props} />,
   sun: SunMedium,
   trash: Trash,
   twitter: ({ ...props }: LucideProps) => (

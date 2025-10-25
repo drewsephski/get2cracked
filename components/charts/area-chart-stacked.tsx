@@ -18,40 +18,54 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
+const defaultChartConfig = {
+  users: {
+    label: "Users",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  revenue: {
+    label: "Revenue",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-export function AreaChartStacked() {
+interface AreaChartStackedProps {
+  data: Array<{
+    month: string;
+    users: number;
+    revenue: number;
+  }>;
+  title?: string;
+  description?: string;
+}
+
+export function AreaChartStacked({
+  data,
+  title = "User Growth",
+  description = "Monthly user acquisition and revenue trends"
+}: AreaChartStackedProps) {
+  const chartConfig = {
+    users: {
+      label: "Users",
+      color: "hsl(var(--chart-1))",
+    },
+    revenue: {
+      label: "Revenue",
+      color: "hsl(var(--chart-2))",
+    },
+  } satisfies ChartConfig;
+
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        {/* <CardTitle>Area Chart - Stacked</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription> */}
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               left: 12,
               right: 12,
@@ -70,19 +84,19 @@ export function AreaChartStacked() {
               content={<ChartTooltipContent indicator="dot" />}
             />
             <Area
-              dataKey="mobile"
+              dataKey="users"
               type="natural"
-              fill="var(--color-mobile)"
+              fill="var(--color-users)"
               fillOpacity={0.4}
-              stroke="var(--color-mobile)"
+              stroke="var(--color-users)"
               stackId="a"
             />
             <Area
-              dataKey="desktop"
+              dataKey="revenue"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="var(--color-revenue)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-revenue)"
               stackId="a"
             />
           </AreaChart>
@@ -93,7 +107,7 @@ export function AreaChartStacked() {
           Trending up by 5.2% this month <TrendingUp className="size-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          January - June 2024
+          Showing user and revenue trends
         </div>
       </CardFooter>
     </Card>

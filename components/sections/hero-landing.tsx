@@ -1,16 +1,21 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/shared/icons";
 import { TypewriterText } from "@/components/ui/typewriter-text";
+import { HeroInteractiveButton } from "@/components/ui/hero-interactive-button";
 
 export default function HeroLanding() {
+  const { isSignedIn } = useAuth();
   return (
     <section className="space-y-4 py-8 sm:space-y-6 sm:py-20 lg:py-20">
       <div className="container flex max-w-5xl flex-col items-center gap-4 text-center sm:gap-5">
         <Link
-          href="/dashboard"
+          href={isSignedIn ? "/dashboard" : "/sign-up"}
           className={cn(
             buttonVariants({ variant: "secondary", rounded: "full" }),
             "group relative inline-flex items-center px-4 py-2 text-sm font-medium transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10",
@@ -51,17 +56,7 @@ export default function HeroLanding() {
           className="flex justify-center space-x-2 md:space-x-4"
           style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}
         >
-          <Link
-            href="/pricing"
-            prefetch={true}
-            className={cn(
-              buttonVariants({ size: "lg", rounded: "full" }),
-              "group gap-2 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10",
-            )}
-          >
-            <span>Get Started</span>
-            <Icons.arrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+          <HeroInteractiveButton />
           <Link
             href="/pricing"
             className={cn(
@@ -70,7 +65,7 @@ export default function HeroLanding() {
                 size: "lg",
                 rounded: "full",
               }),
-              "group px-5 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10",
+              "group px-6 py-3 transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10",
             )}
           >
             <Icons.package className="mr-2 size-4" />

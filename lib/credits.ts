@@ -95,7 +95,7 @@ export async function getUserCredits(userId: string): Promise<{
   }
 }
 
-export async function resetUserCredits(userId: string, newCredits: number = 3): Promise<boolean> {
+export async function resetUserCredits(userId: string, newCredits: number = 25): Promise<boolean> {
   if (!userId) {
     return false;
   }

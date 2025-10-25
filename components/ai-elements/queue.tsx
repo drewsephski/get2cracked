@@ -1,6 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import type { StaticImageData } from "next/image";
+
+type StaticImport = {
+  src: string;
+  height: number;
+  width: number;
+  blurDataURL?: string;
+  blurWidth?: number;
+  blurHeight?: number;
+} | StaticImageData;
 import {
   Collapsible,
   CollapsibleContent,
@@ -145,21 +156,29 @@ export const QueueItemAttachment = ({
   <div className={cn("mt-1 flex flex-wrap gap-2", className)} {...props} />
 );
 
-export type QueueItemImageProps = ComponentProps<"img">;
+export type QueueItemImageProps = React.ComponentProps<typeof Image> & {
+  height?: number | `${number}`;
+  width?: number | `${number}`;
+  src: string | StaticImport;
+};
 
 export const QueueItemImage = ({
   className,
+  height = 32,
+  width = 32,
+  alt = '',
+  src,
   ...props
 }: QueueItemImageProps) => (
-  <img
-    alt=""
-    className={cn("size-8 rounded border object-cover", className)}
-    height={32}
-    width={32}
+  <Image
+    alt={alt}
+    className={cn("rounded border object-cover", className)}
+    height={height}
+    width={width}
+    src={src}
     {...props}
   />
 );
-
 export type QueueItemFileProps = ComponentProps<"span">;
 
 export const QueueItemFile = ({

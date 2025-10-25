@@ -70,7 +70,28 @@ model User {
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
 
   // Credit system fields
-  credits                Int       @default(3) @map(name: "credits")
+  credits                Int       @default(25) @map(name: "credits")
+
+  // Team collaboration fields
+  workspaceId            String?   @map(name: "workspace_id")
+  workspace              Workspace? @relation("UserWorkspace")
+
+  // Referral system fields
+  referralCode           String?   @unique @map(name: "referral_code")
+  totalReferrals         Int       @default(0) @map(name: "total_referrals")
+
+  // API access fields
+  apiAccessEnabled       Boolean   @default(true) @map(name: "api_access_enabled")
+  lastLoginAt            DateTime? @map(name: "last_login_at")
+
+  // Relations to new models
+  workspaceMemberships   WorkspaceMember[]
+  workspaceInvitations   WorkspaceInvitation[]
+  apiKeys                ApiKey[]
+  webhooks               Webhook[]
+  emailCampaigns         EmailCampaign[]
+  referralsMade          Referral[] @relation("ReferralsFromUser")
+  referralsReceived      Referral[] @relation("ReferralsToUser")
 
   @@map(name: "users")
 }
@@ -82,6 +103,178 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map(name: "verification_tokens")
+}
+
+model Workspace {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  createdAt   DateTime        @default(now()) @map(name: "created_at")
+  updatedAt   DateTime        @default(now()) @map(name: "updated_at")
+  ownerId     String          @unique @map(name: "owner_id")
+  owner       User            @relation("UserWorkspace", fields: [ownerId], references: [id], onDelete: Cascade)
+  plan        SubscriptionPlan @default(FREE)
+
+  members     WorkspaceMember[]
+  invitations WorkspaceInvitation[]
+  apiKeys     ApiKey[]
+  webhooks    Webhook[]
+  emailCampaigns EmailCampaign[]
+  pageTemplates  PageTemplate[]
+
+  @@index([ownerId])
+  @@map(name: "workspaces")
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum ReferralStatus {
+  PENDING
+  COMPLETED
+  REWARDED
+}
+
+enum EmailCampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENT
+}
+
+model WorkspaceMember {
+  id        String       @id @default(cuid())
+  workspaceId String     @map(name: "workspace_id")
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String     @map(name: "user_id")
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        WorkspaceRole @default(MEMBER)
+  joinedAt    DateTime   @default(now()) @map(name: "joined_at")
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+  @@map(name: "workspace_members")
+}
+
+model WorkspaceInvitation {
+  id          String   @id @default(cuid())
+  workspaceId String   @map(name: "workspace_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  email       String
+  role        WorkspaceRole @default(MEMBER)
+  token       String   @unique
+  expiresAt   DateTime @map(name: "expires_at")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  userId      String?  @map(name: "user_id")
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@index([workspaceId])
+  @@index([token])
+  @@map(name: "workspace_invitations")
+}
+
+model Referral {
+  id            String        @id @default(cuid())
+  referrerId    String        @map(name: "referrer_id")
+  referrer      User          @relation("ReferralsFromUser", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredId    String        @map(name: "referred_id")
+  referred      User          @relation("ReferralsToUser", fields: [referredId], references: [id], onDelete: Cascade)
+  code          String
+  status        ReferralStatus @default(PENDING)
+  rewardAmount  Int?          @map(name: "reward_amount")
+  createdAt     DateTime      @default(now()) @map(name: "created_at")
+  completedAt   DateTime?     @map(name: "completed_at")
+
+  @@unique([referrerId, referredId])
+  @@index([referrerId])
+  @@index([referredId])
+  @@index([code])
+  @@map(name: "referrals")
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String   @map(name: "user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspaceId String?  @map(name: "workspace_id")
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  key         String   @unique // This should be hashed in practice
+  lastUsedAt  DateTime? @map(name: "last_used_at")
+  expiresAt   DateTime? @map(name: "expires_at")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  revokedAt   DateTime? @map(name: "revoked_at")
+  permissions String   @default("{}") // JSON string for scoped permissions
+
+  @@index([userId])
+  @@index([workspaceId])
+  @@map(name: "api_keys")
+}
+
+model Webhook {
+  id            String   @id @default(cuid())
+  workspaceId   String   @map(name: "workspace_id")
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId        String?  @map(name: "user_id")
+  user          User?    @relation(fields: [userId], references: [id])
+  url           String
+  events        String[] // Array of event types as strings
+  secret        String
+  isActive      Boolean  @default(true) @map(name: "is_active")
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  lastTriggeredAt DateTime? @map(name: "last_triggered_at")
+
+  @@index([workspaceId])
+  @@map(name: "webhooks")
+}
+
+model EmailCampaign {
+  id            String             @id @default(cuid())
+  workspaceId   String             @map(name: "workspace_id")
+  workspace     Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId        String             @map(name: "user_id")
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  subject       String
+  content       String
+  status        EmailCampaignStatus @default(DRAFT)
+  scheduledFor  DateTime?          @map(name: "scheduled_for")
+  sentAt        DateTime?          @map(name: "sent_at")
+  recipientCount Int               @default(0) @map(name: "recipient_count")
+  openRate      Float?             @map(name: "open_rate")
+  clickRate     Float?             @map(name: "click_rate")
+
+  @@index([workspaceId])
+  @@index([userId])
+  @@map(name: "email_campaigns")
+}
+
+model PageTemplate {
+  id          String   @id @default(cuid())
+  workspaceId String?  @map(name: "workspace_id")
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  category    String
+  previewImage String? @map(name: "preview_image")
+  code        String   // JSON structure of the template
+  isPremium   Boolean  @default(false) @map(name: "is_premium")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+
+  @@index([workspaceId])
+  @@index([category])
+  @@map(name: "page_templates")
 }
 
 model Voice {

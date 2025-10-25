@@ -124,6 +124,36 @@ export const Post = defineDocumentType(() => ({
   computedFields: defaultComputedFields,
 }));
 
+export const Changelog = defineDocumentType(() => ({
+  name: "Changelog",
+  filePathPattern: `changelog/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: {
+      type: "string",
+      required: true,
+    },
+    date: {
+      type: "date",
+      required: true,
+    },
+    version: {
+      type: "string",
+      required: true,
+    },
+    categories: {
+      type: "list",
+      of: {
+        type: "enum",
+        options: ["feature", "improvement", "bug-fix", "security"],
+        default: "feature",
+      },
+      required: true,
+    },
+  },
+  computedFields: defaultComputedFields,
+}));
+
 export const Page = defineDocumentType(() => ({
   name: "Page",
   filePathPattern: `pages/**/*.mdx`,
@@ -142,7 +172,7 @@ export const Page = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: "./content",
-  documentTypes: [Page, Doc, Guide, Post],
+  documentTypes: [Page, Doc, Guide, Post, Changelog],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

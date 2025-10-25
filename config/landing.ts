@@ -8,25 +8,25 @@ export const infos: InfoLdg[] = [
     list: []
   },
   {
-    title: "Save Thousands in Development Costs",
+    title: "Save $75K+ in Development Costs",
     description:
-      "Why pay $50K+ for custom development when you can have a premium, enterprise-grade foundation for a fraction of the cost? Every feature is meticulously crafted and ready to deploy.",
+      "Why pay $75K+ for custom development when you can have a premium, enterprise-grade foundation for a fraction of the cost? Every feature is meticulously crafted and ready to deploy.",
     image: "/_static/illustrations/work-from-home.jpg",
     list: [
       {
-        title: "Pre-Built Authentication",
-        description: "Complete user management with Clerk, social logins, and security features ready to go.",
-        icon: "settings",
+        title: "Team Collaboration Built-In",
+        description: "Multi-user workspaces with role-based permissions, team invitations, and collaborative features.",
+        icon: "user",
       },
       {
-        title: "Payment Processing",
-        description: "Full Stripe integration with subscriptions, webhooks, and billing management.",
-        icon: "billing",
+        title: "Marketing Tools Included",
+        description: "Built-in referral system, email campaigns, and SEO optimization tools.",
+        icon: "messages",
       },
       {
-        title: "Production Database",
-        description: "PostgreSQL with Prisma ORM, migrations, and optimal schema for SaaS applications.",
-        icon: "settings",
+        title: "Production Analytics",
+        description: "User behavior tracking, revenue metrics, and custom dashboards for data-driven decisions.",
+        icon: "lineChart",
       },
     ],
   },
@@ -53,6 +53,48 @@ export const features: FeatureLdg[] = [
       "Modern, accessible design system with Shadcn/ui components. Customize the look and feel to match your brand while maintaining professional quality.",
     link: "/docs/components",
     icon: "settings",
+  },
+  {
+    title: "Team & Workspace Management",
+    description:
+      "Multi-user support with role-based access control, team invitations, and collaborative features. Perfect for agencies and growing teams.",
+    link: "/dashboard/team",
+    icon: "user",
+  },
+  {
+    title: "Referral & Affiliate System",
+    description:
+      "Built-in referral tracking, custom reward rules, and affiliate dashboard. Grow your user base organically with automated rewards.",
+    link: "/dashboard/referrals",
+    icon: "package",
+  },
+  {
+    title: "Advanced Analytics Dashboard",
+    description:
+      "User behavior tracking, revenue metrics, conversion funnels, and custom reports. Make data-driven decisions with comprehensive insights.",
+    link: "/dashboard/analytics",
+    icon: "lineChart",
+  },
+  {
+    title: "API & Webhooks",
+    description:
+      "RESTful API with authentication, webhook system for real-time events, and comprehensive API documentation. Integrate with any service.",
+    link: "/docs/api",
+    icon: "settings",
+  },
+  {
+    title: "Email Marketing Integration",
+    description:
+      "Pre-built email templates, campaign management, and automated drip sequences. Nurture leads and engage users effectively.",
+    link: "/dashboard/emails",
+    icon: "messages",
+  },
+  {
+    title: "50+ Page Templates",
+    description:
+      "Pre-built templates for landing pages, dashboards, auth pages, pricing, blog, and more. Launch faster with professional designs.",
+    link: "/dashboard/templates",
+    icon: "page",
   },
   {
     title: "Comprehensive Documentation",
@@ -83,41 +125,41 @@ export const testimonials: TestimonialType[] = [
     job: "Startup Founder",
     image: "/_static/blog/blog-post-1.jpg",
     review:
-      "Get Cracked saved me 3 months of development time and over $30K in developer costs. Everything was pre-configured - authentication, payments, database, email - I just customized the branding and launched. As a non-technical founder, this was exactly what I needed to get to market fast.",
+      "The team collaboration features saved us from building our own permission system from scratch. The referral program helped us grow 3x faster than expected. Get Cracked didn't just save us money - it accelerated our entire go-to-market strategy.",
   },
   {
     name: "Marcus Rodriguez",
     job: "Solo Entrepreneur",
     image: "/_static/blog/blog-post-2.jpg",
     review:
-      "I tried building from scratch and it was a nightmare. Get Cracked had everything ready to go - Stripe integration, user management, beautiful UI components. I saved thousands and launched in weeks instead of months. The documentation was incredible too.",
+      "The built-in referral system helped us grow 10x faster than our previous manual approach. The team features let me bring on contractors without worrying about access control. Everything just worked out of the box.",
   },
   {
     name: "Amanda Foster",
     job: "Small Business Owner",
     image: "/_static/illustrations/work-from-home.jpg",
     review:
-      "The pre-built authentication and payment systems alone saved me $15K in development costs. Everything worked perfectly out of the box. I just focused on my unique features while the boilerplate handled all the complex infrastructure. Worth every penny.",
+      "The pre-built authentication and payment systems alone saved me $15K in development costs. The advanced analytics dashboard gives me insights I never had before. The team collaboration tools made it easy to scale my operations.",
   },
   {
     name: "David Kim",
     job: "Tech Startup CEO",
     image: "/_static/blog/blog-post-3.jpg",
     review:
-      "As a technical founder, I still chose Get Cracked because it had production-ready code with proper security, error handling, and scalability. I could have built it myself but why reinvent the wheel? Saved 2 months of development time and launched with confidence.",
+      "As a technical founder, I still chose Get Cracked because it had production-ready code with proper security, error handling, and scalability. The API access and webhook system made integrations seamless. The analytics dashboard transformed how we make product decisions.",
   },
   {
     name: "Lisa Thompson",
     job: "Agency Owner",
     image: "/_static/blog/blog-post-4.jpg",
     review:
-      "My clients need SaaS apps fast. Get Cracked lets me deliver professional, scalable applications in weeks instead of months. The enterprise-grade architecture and beautiful UI components impress clients every time. It's become my secret weapon for rapid deployment.",
+      "My clients need SaaS apps fast. Get Cracked lets me deliver professional, scalable applications in weeks instead of months. The enterprise-grade architecture and beautiful UI components impress clients every time. The team features make client collaboration effortless.",
   },
   {
     name: "Ryan Patel",
     job: "Indie Developer",
     image: "/_static/illustrations/work-from-home.jpg",
     review:
-      "The developer experience is incredible - TypeScript, modern tooling, comprehensive documentation. I customized the entire app in days, not weeks. The code quality is so high that I learned best practices just by reading through it. Absolutely worth the investment.",
+      "The developer experience is incredible - TypeScript, modern tooling, comprehensive documentation. The 50+ templates saved me weeks of design work. The API system and webhooks made integrations a breeze. I customized the entire app in days, not weeks.",
   },
 ];

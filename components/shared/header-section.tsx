@@ -2,9 +2,10 @@ interface HeaderSectionProps {
   label?: string;
   title: string;
   subtitle?: string;
+  description?: string;
 }
 
-export function HeaderSection({ label, title, subtitle }: HeaderSectionProps) {
+export function HeaderSection({ label, title, subtitle, description }: HeaderSectionProps) {
   return (
     <div className="flex flex-col items-center text-center">
       {label ? (
@@ -18,6 +19,11 @@ export function HeaderSection({ label, title, subtitle }: HeaderSectionProps) {
       {subtitle ? (
         <p className="mt-6 text-balance text-lg text-muted-foreground">
           {subtitle}
+        </p>
+      ) : null}
+      {description ? (
+        <p className="mt-4 max-w-2xl text-balance text-base text-muted-foreground">
+          {description}
         </p>
       ) : null}
     </div>

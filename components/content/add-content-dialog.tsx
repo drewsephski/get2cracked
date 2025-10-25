@@ -117,7 +117,7 @@ export function AddContentDialog() {
             <DialogFooter>
               <Button type="submit" disabled={isLoading}>
                 {isLoading && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                  <Icons.spinner className="mr-2 size-4 animate-spin" />
                 )}
                 Save Content
               </Button>
