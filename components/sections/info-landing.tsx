@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { InfoLdg } from "@/types";
 
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
+import { StaticImage } from "@/components/ui/static-image";
 
 interface InfoLandingProps {
   data: InfoLdg;
@@ -48,17 +48,17 @@ export default function InfoLanding({
           )}
         >
           <div className="aspect-auto">
-            <Image
+            <StaticImage
               className="object-contain object-center dark:opacity-85"
               src={data.image}
               alt={data.title}
-              width={1000}
-              height={500}
-              priority={true}
+              width={600}
+              height={400}
+              quality={100}
             />
-            {/* Subtle overlay for design consistency */}
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/10 via-transparent to-blue-600/5 dark:from-blue-500/20 dark:to-blue-600/10"></div>
           </div>
+          {/* Subtle overlay for design consistency */}
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/10 via-transparent to-blue-600/5 dark:from-blue-500/20 dark:to-blue-600/10"></div>
         </div>
       </MaxWidthWrapper>
     </div>

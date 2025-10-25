@@ -1,17 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import type { StaticImageData } from "next/image";
-
-type StaticImport = {
-  src: string;
-  height: number;
-  width: number;
-  blurDataURL?: string;
-  blurWidth?: number;
-  blurHeight?: number;
-} | StaticImageData;
+import { StaticImage } from "@/components/ui/static-image";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,7 +10,16 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, PaperclipIcon } from "lucide-react";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ImgHTMLAttributes } from "react";
+
+interface StaticImport {
+  src: string;
+  height: number;
+  width: number;
+  blurDataURL?: string;
+  blurWidth?: number;
+  blurHeight?: number;
+}
 
 export type QueueMessagePart = {
   type: string;
@@ -156,11 +155,18 @@ export const QueueItemAttachment = ({
   <div className={cn("mt-1 flex flex-wrap gap-2", className)} {...props} />
 );
 
-export type QueueItemImageProps = React.ComponentProps<typeof Image> & {
+interface QueueItemImageProps {
+  src: string | StaticImport;
+  alt: string;
+  className?: string;
   height?: number | `${number}`;
   width?: number | `${number}`;
-  src: string | StaticImport;
-};
+  loading?: 'eager' | 'lazy';
+  priority?: boolean;
+  style?: React.CSSProperties;
+  onLoadingComplete?: () => void;
+  onError?: React.ReactEventHandler<HTMLImageElement>;
+}
 
 export const QueueItemImage = ({
   className,
@@ -170,11 +176,11 @@ export const QueueItemImage = ({
   src,
   ...props
 }: QueueItemImageProps) => (
-  <Image
+  <StaticImage
     alt={alt}
     className={cn("rounded border object-cover", className)}
-    height={height}
-    width={width}
+    height={typeof height === 'string' ? parseInt(height, 10) : height}
+    width={typeof width === 'string' ? parseInt(width, 10) : width}
     src={src}
     {...props}
   />

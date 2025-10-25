@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import type { ComponentProps } from "react";
-import Image from "next/image";
+import { StaticImage } from "@/components/ui/static-image";
+import type { ImageProps } from "next/image";
 
 import { cn } from "@/lib/utils";
 
-export default function BlurImage(props: ComponentProps<typeof Image>) {
+type BlurImageProps = Omit<ImageProps, 'alt'> & {
+  alt?: string;
+};
+
+export default function BlurImage(props: BlurImageProps) {
   const [isLoading, setLoading] = useState(true);
 
   return (
-    <Image
+    <StaticImage
       {...props}
-      alt={props.alt}
+      alt={props.alt || ''}
       className={cn(
         props.className,
         "duration-500 ease-in-out",
