@@ -84,7 +84,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
         <div className="flex items-center space-x-2">
           {/* Desktop Navigation */}
-          <div className="items-center space-x-2 hidden md:flex">
+          <div className="hidden items-center space-x-2 md:flex">
             {documentation ? (
               <div className="hidden flex-1 items-center space-x-4 sm:justify-end lg:flex">
                 <div className="hidden lg:flex lg:grow-0">

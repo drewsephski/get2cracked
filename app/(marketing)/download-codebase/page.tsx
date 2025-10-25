@@ -142,7 +142,7 @@ export default async function DownloadCodebasePage() {
         <div className="flex justify-center gap-4">
           <Link href="https://getcracked.lol/docs">
             <Button variant="outline">
-              <Icons.book className="mr-2 size-4" />
+              <Icons.bookOpen className="mr-2 size-4" />
               Documentation
             </Button>
           </Link>
