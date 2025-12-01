@@ -1,0 +1,375 @@
+---
+title: "API Documentation"
+description: "Complete API reference for Get Cracked SaaS boilerplate"
+---
+
+import { Callout } from "@/components/shared/callout";
+
+# API Documentation
+
+Get Cracked provides a comprehensive REST API that allows you to integrate with your SaaS application programmatically. All API endpoints require authentication using API keys.
+
+## Authentication
+
+All API requests require an API key to be included in the request headers:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+<Callout type="warning">
+Never expose your API keys in client-side code or commit them to version control.
+</Callout>
+
+### API Key Management
+
+You can create and manage API keys from your dashboard at `/dashboard/api`. Each API key can have different permission levels:
+
+- **Read Only**: Can only retrieve data
+- **Read & Write**: Can create, update, and delete resources
+- **Admin**: Full access to all endpoints
+
+## Base URL
+
+```
+https://your-domain.com/api
+```
+
+## Rate Limits
+
+Rate limits are applied based on your subscription tier:
+
+| Plan | Requests per Day | Requests per Hour |
+|------|------------------|-------------------|
+| Starter | 100 | 10 |
+| Pro | 10,000 | 1,000 |
+| Business | 100,000 | 10,000 |
+| Enterprise | Unlimited | Unlimited |
+
+<Callout type="info">
+Rate limits are applied per API key. Upgrade your plan to increase limits.
+</Callout>
+
+## Response Format
+
+All API responses follow a consistent format:
+
+```json
+{
+  "success": true,
+  "data": {
+    // Response data
+  },
+  "message": "Success message",
+  "timestamp": "2024-02-15T10:30:00Z"
+}
+```
+
+## Error Handling
+
+Error responses include detailed information about what went wrong:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_API_KEY",
+    "message": "The provided API key is invalid or expired",
+    "details": "API key 'gc_invalid' does not exist"
+  },
+  "timestamp": "2024-02-15T10:30:00Z"
+}
+```
+
+### Common HTTP Status Codes
+
+- `200`: Success
+- `400`: Bad Request
+- `401`: Unauthorized
+- `403`: Forbidden
+- `404`: Not Found
+- `429`: Rate Limit Exceeded
+- `500`: Internal Server Error
+
+## Pagination
+
+Endpoints that return multiple items support pagination:
+
+```json
+{
+  "success": true,
+  "data": [...],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "pages": 8
+  }
+}
+```
+
+Use `page` and `limit` query parameters to control pagination:
+
+```
+GET /api/users?page=2&limit=50
+```
+
+## Webhooks
+
+Get Cracked supports webhooks for real-time notifications. Configure webhooks from your dashboard or via the API.
+
+### Webhook Events
+
+- `user.created`: New user registration
+- `user.updated`: User profile update
+- `subscription.created`: New subscription
+- `subscription.updated`: Subscription change
+- `subscription.cancelled`: Subscription cancellation
+- `payment.succeeded`: Successful payment
+- `payment.failed`: Failed payment
+
+### Webhook Signature Verification
+
+All webhook requests include an HMAC SHA-256 signature:
+
+```
+X-Signature: sha256=abc123def456...
+```
+
+Verify the signature using your webhook secret:
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+
+  return signature === `sha256=${expectedSignature}`;
+}
+```
+
+## API Endpoints
+
+### Users
+
+#### Get Current User
+
+```http
+GET /api/user
+```
+
+Returns the authenticated user's profile information.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "user_123",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "USER",
+    "createdAt": "2024-01-15T00:00:00Z",
+    "subscription": {
+      "plan": "Business",
+      "status": "active",
+      "currentPeriodEnd": "2024-03-15T00:00:00Z"
+    }
+  }
+}
+```
+
+#### Update User Profile
+
+```http
+PATCH /api/user
+```
+
+Update the authenticated user's profile.
+
+**Request Body:**
+```json
+{
+  "name": "John Smith",
+  "image": "https://example.com/avatar.jpg"
+}
+```
+
+#### Get User Credits
+
+```http
+GET /api/user/credits
+```
+
+Returns the user's current credit balance and subscription status.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "credits": 150,
+    "isPaid": true,
+    "subscriptionPlan": "Business"
+  }
+}
+```
+
+### Subscriptions
+
+#### Get Subscription Details
+
+```http
+GET /api/user/subscription
+```
+
+Returns the user's subscription information.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "plan": "Business",
+    "status": "active",
+    "currentPeriodStart": "2024-02-15T00:00:00Z",
+    "currentPeriodEnd": "2024-03-15T00:00:00Z",
+    "cancelAtPeriodEnd": false,
+    "stripeCustomerId": "cus_1234567890"
+  }
+}
+```
+
+#### Update Subscription
+
+```http
+PATCH /api/user/subscription
+```
+
+Update the user's subscription plan.
+
+**Request Body:**
+```json
+{
+  "plan": "Business",
+  "interval": "yearly"
+}
+```
+
+### Content Management
+
+#### Get Content
+
+```http
+GET /api/content
+```
+
+Returns all content created by the authenticated user.
+
+**Query Parameters:**
+- `status`: Filter by status (`draft`, `published`)
+- `page`: Page number for pagination
+- `limit`: Number of items per page
+
+#### Create Content
+
+```http
+POST /api/content
+```
+
+Create new content.
+
+**Request Body:**
+```json
+{
+  "title": "My Blog Post",
+  "content": "This is the content of my blog post...",
+  "status": "draft"
+}
+```
+
+#### Update Content
+
+```http
+PATCH /api/content/{id}
+```
+
+Update existing content.
+
+#### Delete Content
+
+```http
+DELETE /api/content/{id}
+```
+
+Delete content by ID.
+
+## SDKs and Libraries
+
+### JavaScript/TypeScript SDK
+
+```bash
+npm install getcracked-sdk
+```
+
+```javascript
+import { GetCracked } from 'getcracked-sdk';
+
+const client = new GetCracked({
+  apiKey: 'your-api-key'
+});
+
+// Get user profile
+const user = await client.users.getCurrent();
+
+// Create content
+const content = await client.content.create({
+  title: 'My Post',
+  content: 'Content here...'
+});
+```
+
+### Python SDK
+
+```bash
+pip install getcracked-python
+```
+
+```python
+from getcracked import GetCracked
+
+client = GetCracked(api_key="your-api-key")
+
+# Get user profile
+user = client.users.get_current()
+
+# Create content
+content = client.content.create(
+    title="My Post",
+    content="Content here..."
+)
+```
+
+## Best Practices
+
+1. **Use HTTPS**: Always use HTTPS for API requests
+2. **Handle Rate Limits**: Implement exponential backoff for rate-limited requests
+3. **Cache Responses**: Cache API responses to reduce unnecessary requests
+4. **Validate Data**: Always validate API responses before using them
+5. **Monitor Usage**: Track your API usage to avoid hitting limits
+6. **Secure API Keys**: Store API keys securely and rotate them regularly
+
+## Support
+
+If you need help with the API:
+
+- Check the [API documentation](/docs/api) for detailed guides
+- Review the [authentication guide](/docs/api/authentication) for setup instructions
+- Contact support with your API key ID (not the full key) for assistance
+
+## Changelog
+
+Stay updated with API changes and new features in our [changelog](/changelog).

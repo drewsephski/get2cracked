@@ -1,0 +1,78 @@
+---
+title: Config Files
+description: Easily configure your Get Cracked Starter SaaS boilerplate template with these files.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+The `config` directory contains essential files for setting up and customizing your Get Cracked Starter SaaS boilerplate. This guide will walk you through each file, explaining its purpose and how to quickly adapt it to your project's needs.
+
+## Configuration Files Overview
+
+Here's a breakdown of the key configuration files you'll find:
+
+### Landing Page Configuration
+
+The [`config/landing.ts`](config/landing.ts) file allows you to customize the content displayed on your homepage. This includes sections like hero banners, feature lists, and call-to-action elements.
+
+**Customization Tips:**
+*   **Content:** Easily update text, images, and links to reflect your brand and offerings.
+*   **Sections:** The homepage components are located in the [`components/sections`](components/sections) folder. You can modify existing sections or add new ones by referencing these components.
+
+### Navigation Menus
+
+The navigation configuration files define the links and structure of your application's menus:
+*   [`config/marketing.ts`](config/marketing.ts): Manages navigation links for your public-facing marketing site.
+*   [`config/dashboard.ts`](config/dashboard.ts): Configures navigation specific to the user dashboard.
+*   [`config/docs.ts`](config/docs.ts): Defines the sidebar navigation for your documentation pages.
+
+**Customization Tips:**
+*   **Add/Remove Links:** Simply add or remove objects from the arrays within these files to update your navigation.
+*   **Reorder:** Change the order of links by reordering the objects in the arrays.
+
+### Site Metadata and Global Settings
+
+The [`config/site.ts`](config/site.ts) file is where you'll manage global site metadata and footer links.
+
+**Customization Tips:**
+*   **SEO:** Update the `name`, `description`, and `url` for better search engine optimization.
+*   **Social Links:** Modify footer social media links to point to your profiles.
+
+### Subscription and Pricing Plans
+
+The [`config/subscriptions.ts`](config/subscriptions.ts) file is crucial for defining your SaaS pricing plans and integrating with Stripe.
+
+**Customization Tips:**
+*   **Pricing Cards:** Each object in the array represents a pricing card on your subscriptions page.
+*   **Features & Limitations:** Clearly list the `benefits` and `limitations` for each plan.
+*   **Prices:** Set `monthly` and `yearly` prices.
+*   **Stripe Integration:** The `stripeIds` object is critical. You **must** replace the placeholder environment variables (`env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID`, `env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID`, etc.) with your actual Stripe Price IDs. These IDs link your pricing plans to your Stripe account, enabling proper billing. Refer to the Stripe documentation for how to obtain these IDs.
+
+**Example Pricing Card Structure:**
+```js
+{
+  title: 'Pro',
+  description: 'Unlock Advanced Features',
+  benefits: [
+    'Up to 500 monthly posts',
+    'Advanced analytics and reporting',
+    'Access to business templates',
+    'Priority customer support',
+    'Exclusive webinars and training.',
+  ],
+  limitations: [
+    'No custom branding',
+    'Limited access to business resources.',
+  ],
+  prices: {
+    monthly: 15,
+    yearly: 144,
+  },
+  stripeIds: {
+    monthly: env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID, // REPLACE with your Stripe monthly price ID
+    yearly: env.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID,   // REPLACE with your Stripe yearly price ID
+  },
+},
+```

@@ -1,0 +1,261 @@
+---
+title: Deploying to Vercel
+description: "Step-by-step guide for deploying to Vercel"
+published: true
+---
+
+# Deploy to Vercel
+
+Deploy your Get Cracked SaaS application to Vercel with this comprehensive guide.
+
+## Prerequisites
+
+Before deploying, ensure you have:
+
+- A Vercel account (free to create)
+- Your Get Cracked codebase with all dependencies installed
+- Environment variables configured
+- Database set up and running
+
+## Step 1: Prepare Your Codebase
+
+### Environment Variables
+
+Create a `.env.local` file in your project root with all required environment variables:
+
+```env
+# Database
+DATABASE_URL="your-database-url"
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key"
+CLERK_SECRET_KEY="your-clerk-secret-key"
+NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+
+# Stripe
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
+STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
+
+# Resend Email
+RESEND_API_KEY="your-resend-api-key"
+
+# App Configuration
+NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
+```
+
+Never commit your `.env.local` file to version control. Add it to your `.gitignore`.
+
+### Database Setup
+
+Ensure your database is accessible from the internet:
+
+1. **Neon Database**: Already cloud-hosted and accessible
+2. **Supabase**: Use the connection string from your project settings
+3. **Railway**: Enable public networking in your database settings
+4. **PlanetScale**: Use the public connection string
+
+Test your database connection:
+
+```bash
+pnpm run db:push
+```
+
+## Step 2: Deploy to Vercel
+
+### Using Vercel CLI
+
+1. **Install Vercel CLI**:
+```bash
+npm i -g vercel
+```
+
+2. **Login to Vercel**:
+```bash
+vercel login
+```
+
+3. **Deploy**:
+```bash
+vercel --prod
+```
+
+### Using GitHub Integration
+
+1. **Push to GitHub**: Push your code to a GitHub repository
+2. **Connect to Vercel**: Go to [vercel.com](https://vercel.com) and import your repository
+3. **Configure Settings**: Vercel will automatically detect Next.js settings
+4. **Deploy**: Click "Deploy" to start the deployment process
+
+## Step 3: Configure Environment Variables
+
+In the Vercel dashboard:
+
+1. Go to your project settings
+2. Navigate to **Environment Variables**
+3. Add all the variables from your `.env.local` file
+4. Redeploy your application
+
+Use the same variable names in Vercel as in your local `.env.local` file.
+
+## Step 4: Set Up Database
+
+1. **Run Migrations**: Vercel will automatically run `pnpm run build`
+2. **Check Database**: Ensure your database is accessible and migrations run successfully
+3. **Verify Connection**: Check that your app can connect to the database
+
+## Step 5: Configure Authentication
+
+### Clerk Setup
+
+1. **Domain Configuration**: Add your Vercel domain to Clerk allowed domains
+2. **Webhook URLs**: Update webhook URLs in Clerk dashboard:
+   - User created: `https://your-domain.vercel.app/api/webhooks/clerk/user-created`
+   - User updated: `https://your-domain.vercel.app/api/webhooks/clerk/user-updated`
+
+3. **Environment Variables**: Ensure Clerk environment variables are set in Vercel
+
+## Step 6: Configure Payments
+
+### Stripe Setup
+
+1. **Webhook Configuration**: Add your Vercel domain to Stripe webhook endpoints
+2. **Webhook Events**: Configure these events:
+   - `customer.subscription.created`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+   - `invoice.payment_succeeded`
+   - `invoice.payment_failed`
+
+3. **Webhook URL**: `https://your-domain.vercel.app/api/webhooks/stripe`
+
+## Step 7: Configure Email
+
+### Resend Setup
+
+1. **Domain Verification**: Verify your domain in Resend dashboard
+2. **Environment Variables**: Ensure Resend API key is configured in Vercel
+3. **Test Email**: Send a test email to verify delivery
+
+## Step 8: Post-Deployment Checklist
+
+### Verify Core Features
+
+- [ ] User registration and login work
+- [ ] Email verification functions
+- [ ] Password reset works
+- [ ] Stripe subscription flow completes
+- [ ] Database connections are stable
+
+### Test API Endpoints
+
+- [ ] All API routes return proper responses
+- [ ] Authentication middleware works
+- [ ] Database queries execute successfully
+- [ ] File uploads function correctly
+
+### Performance Check
+
+- [ ] Pages load within 2-3 seconds
+- [ ] Images and assets load properly
+- [ ] Mobile responsiveness works
+- [ ] Core Web Vitals are within acceptable ranges
+
+## Troubleshooting
+
+### Common Issues
+
+#### Database Connection Errors
+
+**Problem**: App can't connect to database
+**Solution**:
+- Verify DATABASE_URL is correct in Vercel
+- Check database is accessible from internet
+- Ensure database credentials are valid
+
+#### Build Failures
+
+**Problem**: Deployment fails during build
+**Solution**:
+- Check all environment variables are set
+- Verify Node.js version compatibility
+- Review build logs for specific errors
+
+#### Authentication Issues
+
+**Problem**: Clerk authentication not working
+**Solution**:
+- Verify Clerk environment variables
+- Check domain is added to Clerk settings
+- Ensure HTTPS is enabled (required by Clerk)
+
+#### Stripe Webhook Failures
+
+**Problem**: Stripe webhooks not processing
+**Solution**:
+- Verify webhook URL is correct
+- Check webhook secret matches
+- Ensure endpoint can receive POST requests
+
+## Production Optimizations
+
+### Performance
+
+1. **Enable Vercel Analytics**: Add analytics to monitor performance
+2. **Configure Caching**: Set appropriate cache headers for static assets
+3. **Image Optimization**: Use Next.js Image component for all images
+4. **Database Indexing**: Ensure proper database indexes for query performance
+
+### Security
+
+1. **HTTPS Enforcement**: Vercel automatically provides HTTPS
+2. **Environment Variables**: Use Vercel's environment variable protection
+3. **Database Security**: Ensure database credentials are secure
+4. **API Security**: Implement rate limiting and authentication
+
+### Monitoring
+
+1. **Error Tracking**: Set up error monitoring with Sentry or similar
+2. **Performance Monitoring**: Use Vercel Analytics or similar services
+3. **Uptime Monitoring**: Set up uptime checks
+4. **Log Monitoring**: Configure log aggregation
+
+## Scaling Considerations
+
+### When to Scale
+
+- **Database**: Monitor database performance and consider read replicas
+- **Functions**: Consider moving to Vercel Functions for better performance
+- **Storage**: Use Vercel Blob for file storage if needed
+- **CDN**: Vercel automatically provides global CDN
+
+### Cost Optimization
+
+- **Database**: Choose appropriate database plan based on usage
+- **Functions**: Monitor function usage to optimize costs
+- **Bandwidth**: Optimize images and assets to reduce bandwidth costs
+- **Monitoring**: Set up cost monitoring alerts
+
+## Support
+
+If you encounter issues during deployment:
+
+1. **Check Vercel Logs**: View detailed build and runtime logs
+2. **Review Environment Variables**: Ensure all variables are correctly set
+3. **Test Locally**: Verify everything works in development first
+4. **Contact Support**: Reach out with your deployment URL and error details
+
+## Next Steps
+
+After successful deployment:
+
+1. **Set Up Monitoring**: Configure error tracking and performance monitoring
+2. **Configure Backups**: Set up automated database backups
+3. **Plan Scaling**: Consider CDN and database scaling strategies
+4. **Security Audit**: Review security configurations and best practices
+5. **Performance Optimization**: Implement caching and optimization strategies
+
+---
+
+Your Get Cracked SaaS application is now live on Vercel! 🎉

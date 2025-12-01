@@ -1,0 +1,87 @@
+---
+title: Authentication with Clerk
+description: How to configure Clerk authentication for your SaaS application.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+<Callout type="note" twClass="mt-0">
+  This guide provides step-by-step instructions for setting up Clerk authentication
+  in your Get Cracked Starter SaaS boilerplate. Clerk offers a comprehensive and easy-to-integrate
+  authentication solution.
+</Callout>
+
+## 1. Create a Clerk Account
+
+If you don't already have one, sign up for a free Clerk account at [clerk.com](https://clerk.com/).
+
+## 2. Obtain Clerk API Keys
+
+After creating your account and setting up a new application in Clerk, you will need to obtain your API keys:
+
+*   **Publishable Key**: This key is used on the client-side and typically starts with `pk_test_...` or `pk_live_...`.
+*   **Secret Key**: This key is used on the server-side and typically starts with `sk_test_...` or `sk_live_...`.
+
+You can find these keys in your Clerk Dashboard under the "API Keys" section of your application.
+
+## 3. Configure Environment Variables
+
+Add the following environment variables to your `.env.local` file. Replace the placeholder values with your actual Clerk API keys.
+
+```js title=".env.local"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_YOUR_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY=sk_test_YOUR_CLERK_SECRET_KEY
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+```
+
+*   `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Your Clerk Publishable Key.
+*   `CLERK_SECRET_KEY`: Your Clerk Secret Key.
+*   `NEXT_PUBLIC_CLERK_SIGN_IN_URL`: The URL for your sign-in page.
+*   `NEXT_PUBLIC_CLERK_SIGN_UP_URL`: The URL for your sign-up page.
+*   `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL`: The URL to redirect to after a successful sign-in.
+*   `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL`: The URL to redirect to after a successful sign-up.
+
+## 4. Integrate Clerk into Your Application
+
+The Get Cracked Starter SaaS boilerplate is pre-configured to work seamlessly with Clerk. Ensure your main application file (e.g., `app/layout.tsx` or `pages/_app.tsx` for Next.js) is wrapped with the `<ClerkProvider>` component.
+
+```tsx title="app/layout.tsx"
+import { ClerkProvider } from '@clerk/nextjs';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
+  );
+}
+```
+
+### Protect Routes
+
+To protect routes and ensure only authenticated users can access them, you can use Clerk's middleware. The boilerplate should already have a `middleware.ts` file configured.
+
+```typescript title="middleware.ts"
+import { authMiddleware } from "@clerk/nextjs";
+
+export default authMiddleware({
+  publicRoutes: ["/", "/sign-in", "/sign-up", "/api/webhook"], // Define your public routes here
+});
+
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
+
+Adjust the `publicRoutes` array to include any pages that should be accessible without authentication.
+
+## 5. Next Steps
+
+With Clerk configured, you can now utilize Clerk's various components and hooks throughout your application to manage user sessions, display user information, and more. Refer to the [Clerk documentation](https://clerk.com/docs) for advanced usage.

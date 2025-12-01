@@ -1,0 +1,150 @@
+---
+title: Markdown Files
+description: How to manage content using Markdown and Contentlayer in your Get Cracked Starter SaaS template.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+Your Get Cracked Starter SaaS template leverages [Contentlayer](https://contentlayer.dev/) and [MDX](https://mdxjs.com/) to manage blog posts, documentation, and static pages. This setup provides a powerful and flexible way to organize your content directly within your project.
+
+## Contentlayer Overview
+
+Contentlayer acts as a Markdown-based Content Management System (CMS) that is pre-configured in your template. It allows you to define the structure of your content using Markdown files and provides a straightforward API to access this data within your Next.js application.
+
+The primary benefit of Contentlayer in this template is its ability to:
+-   **Organize Content**: Keep all your content files (blog posts, docs, pages) structured within designated directories.
+-   **Define Data Models**: The template comes with pre-defined data models for different content types, ensuring consistency and ease of use.
+-   **Access Content Easily**: Contentlayer processes your Markdown files into ready-to-use JavaScript objects, which you can import and render in your React components.
+
+## Managing Content with Markdown and Frontmatter
+
+All content in your template is written in Markdown (`.mdx`) files. These files include a "frontmatter" section at the top, which is a YAML block containing metadata about the content (e.g., title, description, author).
+
+### Content Directories
+
+Your template is set up with the following content directories:
+
+-   [`content/blog`](content/blog): For all your blog posts.
+-   [`content/docs`](content/docs): For your product documentation.
+-   [`content/pages`](content/pages): For static pages like "About Us," "Privacy Policy," or "Terms of Service."
+-   [`content/guides`](content/guides): For detailed guides or tutorials.
+
+### Creating New Content
+
+To create new content, simply add a new `.mdx` file within the appropriate directory.
+
+**Example: Creating a new blog post**
+
+1.  Navigate to the [`content/blog`](content/blog) directory.
+2.  Create a new file, for example, `my-new-post.mdx`.
+3.  Add your content, including the frontmatter, at the top of the file:
+
+    ```md
+    ---
+    title: My Awesome New Blog Post
+    description: This is a great post about something interesting.
+    date: "YYYY-MM-DD"
+    image: /_static/blog/my-new-post-image.jpg
+    authors:
+      - your-author-slug
+    ---
+
+    ## Introduction
+
+    This is the main content of your blog post, written in Markdown.
+
+    You can use **bold** text, *italic* text, [links](https://example.com), and more.
+
+    ```
+
+### Customizing `contentlayer.config.js`
+
+Your template includes a [`contentlayer.config.js`](contentlayer.config.ts) file at the root of your project. This file defines the Contentlayer schema, specifying how your Markdown files are processed and what fields are available in their frontmatter.
+
+**Location**: [`contentlayer.config.js`](contentlayer.config.ts)
+
+You generally won't need to modify this file for basic content management. However, if you wish to:
+-   Add new content types (e.g., `Tutorial`).
+-   Add custom fields to existing content types (e.g., an `excerpt` field for blog posts).
+-   Change the file paths Contentlayer watches.
+
+You can modify [`contentlayer.config.js`](contentlayer.config.ts) to suit your needs. The existing configuration provides examples for `Doc`, `Guide`, `Post`, and `Page` document types, including how to define required fields and computed fields like `slug`.
+
+### Example `contentlayer.config.js` Structure (Pre-configured)
+
+```typescript title="contentlayer.config.js"
+import { defineDocumentType, makeSource } from "contentlayer/source-files";
+
+const computedFields = {
+  slug: {
+    type: "string",
+    resolve: (doc) => `/${doc._raw.flattenedPath}`,
+  },
+  slugAsParams: {
+    type: "string",
+    resolve: (doc) => doc._raw.flattenedPath.split("/").slice(1).join("/"),
+  },
+};
+
+export const Doc = defineDocumentType(() => ({
+  name: "Doc",
+  filePathPattern: `docs/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: { type: "string", required: true },
+    description: { type: "string" },
+    published: { type: "boolean", default: true },
+  },
+  computedFields,
+}));
+
+export const Guide = defineDocumentType(() => ({
+  name: "Guide",
+  filePathPattern: `guides/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: { type: "string", required: true },
+    description: { type: "string" },
+    date: { type: "date", required: true },
+    published: { type: "boolean", default: true },
+    featured: { type: "boolean", default: false },
+  },
+  computedFields,
+}));
+
+export const Post = defineDocumentType(() => ({
+  name: "Post",
+  filePathPattern: `blog/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: { type: "string", required: true },
+    description: { type: "string" },
+    date: { type: "date", required: true },
+    published: { type: "boolean", default: true },
+    image: { type: "string", required: true },
+    authors: { type: "list", of: { type: "string" }, required: true },
+  },
+  computedFields,
+}));
+
+export const Page = defineDocumentType(() => ({
+  name: "Page",
+  filePathPattern: `pages/**/*.mdx`,
+  contentType: "mdx",
+  fields: {
+    title: { type: "string", required: true },
+    description: { type: "string" },
+  },
+  computedFields,
+}));
+
+export default makeSource({
+  contentDirPath: "./content",
+  documentTypes: [Page, Doc, Guide, Post],
+  mdx: {},
+});
+```
+
+This configuration ensures that your content is correctly parsed and available throughout your application.

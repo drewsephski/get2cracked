@@ -1,0 +1,329 @@
+---
+title: "Authentication API"
+description: "API documentation for authentication endpoints"
+---
+
+import { Callout } from "@/components/shared/callout";
+
+# Authentication API
+
+Learn how to authenticate API requests and manage user sessions programmatically.
+
+## API Key Authentication
+
+All API endpoints require authentication using API keys. Include your API key in the request header:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+### Obtaining API Keys
+
+1. Log in to your Get Cracked dashboard
+2. Navigate to **Settings** → **API Keys**
+3. Click **Create New API Key**
+4. Choose the appropriate permission level
+5. Copy the generated API key
+
+<Callout type="warning">
+Store your API keys securely and never expose them in client-side code or version control.
+</Callout>
+
+### API Key Permissions
+
+#### Read Only
+- GET requests only
+- Cannot modify data
+- Suitable for public integrations
+
+#### Read & Write
+- Full CRUD operations
+- Can create, update, and delete resources
+- Required for most integrations
+
+#### Admin
+- Complete system access
+- Can manage users and settings
+- Only for trusted applications
+
+## OAuth Authentication
+
+For applications that need to act on behalf of users, Get Cracked supports OAuth 2.0 authentication.
+
+### OAuth Flow
+
+1. **Register Application**: Create an OAuth application in your dashboard
+2. **Authorization Request**: Redirect users to the authorization URL
+3. **User Consent**: User grants permissions to your application
+4. **Token Exchange**: Exchange authorization code for access token
+5. **API Access**: Use access token to make API requests
+
+### Register OAuth Application
+
+```http
+POST /api/oauth/applications
+Authorization: Bearer YOUR_API_KEY
+
+{
+  "name": "My SaaS App",
+  "description": "Integration with Get Cracked",
+  "redirectUris": ["https://myapp.com/callback"],
+  "scopes": ["read", "write"]
+}
+```
+
+### Authorization URL
+
+```
+https://your-domain.com/oauth/authorize?
+  client_id=YOUR_CLIENT_ID&
+  redirect_uri=YOUR_REDIRECT_URI&
+  scope=read+write&
+  state=RANDOM_STATE
+```
+
+### Token Exchange
+
+```http
+POST /api/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=YOUR_CLIENT_ID&
+client_secret=YOUR_CLIENT_SECRET&
+code=AUTHORIZATION_CODE&
+grant_type=authorization_code&
+redirect_uri=YOUR_REDIRECT_URI
+```
+
+**Response:**
+```json
+{
+  "access_token": "access_token_123",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "refresh_token": "refresh_token_456",
+  "scope": "read write"
+}
+```
+
+## Using Access Tokens
+
+Once you have an access token, include it in your API requests:
+
+```http
+Authorization: Bearer ACCESS_TOKEN
+```
+
+### Token Refresh
+
+Access tokens expire after 1 hour. Use the refresh token to get a new access token:
+
+```http
+POST /api/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=YOUR_CLIENT_ID&
+client_secret=YOUR_CLIENT_SECRET&
+refresh_token=REFRESH_TOKEN&
+grant_type=refresh_token
+```
+
+## Session Management
+
+For web applications, you can also use session-based authentication with Clerk.
+
+### Session Endpoints
+
+#### Create Session
+
+```http
+POST /api/auth/session
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+#### Get Session
+
+```http
+GET /api/auth/session
+Cookie: __session=SESSION_ID
+```
+
+#### Destroy Session
+
+```http
+DELETE /api/auth/session
+Cookie: __session=SESSION_ID
+```
+
+## Security Best Practices
+
+### API Key Security
+
+1. **Use HTTPS**: Always use HTTPS for API requests
+2. **Rotate Keys**: Regularly rotate your API keys
+3. **Limit Permissions**: Use the minimum required permissions
+4. **Monitor Usage**: Track API usage for anomalies
+5. **Secure Storage**: Store API keys in environment variables or secure vaults
+
+### OAuth Security
+
+1. **Validate Redirect URIs**: Only allow trusted redirect URIs
+2. **Use State Parameter**: Prevent CSRF attacks with state validation
+3. **Short-lived Tokens**: Use short token expiration times
+4. **Secure Secrets**: Store client secrets securely
+5. **Token Revocation**: Implement token revocation for security incidents
+
+## Error Handling
+
+### Authentication Errors
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_API_KEY",
+    "message": "The provided API key is invalid or expired"
+  }
+}
+```
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INSUFFICIENT_PERMISSIONS",
+    "message": "Your API key does not have permission to access this resource"
+  }
+}
+```
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "TOKEN_EXPIRED",
+    "message": "Access token has expired"
+  }
+}
+```
+
+## Rate Limiting
+
+Authentication requests are also subject to rate limiting:
+
+- **API Key Authentication**: Based on your subscription tier limits
+- **OAuth Flow**: 10 requests per minute per IP address
+- **Session Management**: 5 requests per minute per session
+
+## Examples
+
+### JavaScript/Node.js
+
+```javascript
+const API_KEY = process.env.GETCRACKED_API_KEY;
+const BASE_URL = 'https://your-domain.com/api';
+
+async function getUserProfile() {
+  const response = await fetch(`${BASE_URL}/user`, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  return response.json();
+}
+```
+
+### Python
+
+```python
+import requests
+
+API_KEY = "your-api-key"
+BASE_URL = "https://your-domain.com/api"
+
+def get_user_profile():
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.get(f"{BASE_URL}/user", headers=headers)
+
+    if response.status_code != 200:
+        raise Exception(f"API Error: {response.status_code}")
+
+    return response.json()
+```
+
+### PHP
+
+```php
+<?php
+
+$apiKey = 'your-api-key';
+$baseUrl = 'https://your-domain.com/api';
+
+function getUserProfile() {
+    global $apiKey, $baseUrl;
+
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $baseUrl . '/user');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $apiKey,
+        'Content-Type: application/json'
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+        throw new Exception("API Error: $httpCode");
+    }
+
+    return json_decode($response, true);
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### "Invalid API Key" Error
+- Verify your API key is correct and active
+- Check if your API key has the required permissions
+- Ensure the API key hasn't expired
+
+#### "Rate Limit Exceeded" Error
+- Check your current usage in the dashboard
+- Implement exponential backoff in your application
+- Consider upgrading your subscription plan
+
+#### "Insufficient Permissions" Error
+- Verify your API key has the required permission level
+- Check the endpoint requirements in the documentation
+- Contact support if you need higher permission levels
+
+## Support
+
+For authentication-related issues:
+
+- Check the [API documentation](/docs/api) for complete reference
+- Review the [troubleshooting guide](/docs/troubleshooting)
+- Contact support with your API key ID for assistance
+
+Remember: Never share your full API key with support. Only provide the key ID, which you can find in your dashboard.

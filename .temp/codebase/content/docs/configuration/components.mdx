@@ -1,0 +1,176 @@
+---
+title: Components
+description: Use React components in Markdown using MDX.
+---
+
+## Integrations &amp; Best Practices
+
+All integrations mentioned in these documentation pages are already properly integrated using best practices within the project. These documentation pages are primarily for developers who want to dive deep into the code and understand the implementation details.
+
+Your Get Cracked Starter SaaS boilerplate includes a set of pre-built React components designed for seamless integration into your Markdown content using MDX.
+
+This section outlines how to utilize these components effectively. For instructions on extending your template with custom components, refer to the [Custom Components](#custom-components) section below.
+
+## Built-in Components
+
+### 1. Callout
+
+```jsx
+<Callout type="default | warning | danger | note | info | success">
+  This is a default callout. You can embed **Markdown** inside a `callout`.
+</Callout>
+```
+
+<Callout>
+  This is a default callout. You can embed **Markdown** inside a `callout`.
+</Callout>
+
+<Callout type="warning">
+  This is a warning callout. It uses the props `type="warning"`.
+</Callout>
+
+<Callout type="danger">
+  This is a danger callout. It uses the props `type="danger"`.
+</Callout>
+
+<Callout type="note">
+  This is a warning callout. It uses the props `type="note"`.
+</Callout>
+
+<Callout type="info">
+  This is a danger callout. It uses the props `type="info"`.
+</Callout>
+
+<Callout type="success">
+  This is a warning callout. It uses the props `type="success"`.
+</Callout>
+
+### 2. Card
+
+```mdx
+<Card href="#">
+
+#### Heading
+
+You can use **markdown** inside cards.
+
+</Card>
+```
+
+<Card href="#">
+
+#### Heading
+
+You can use **markdown** inside cards.
+
+</Card>
+
+You can also use HTML to embed cards in a grid.
+
+```mdx
+<div className="grid grid-cols-2 gap-4">
+  <Card href="#">
+    #### Card One 
+    You can use **markdown** inside cards.
+  </Card>
+
+  <Card href="#">
+    #### Card Two 
+    You can also use `inline code` and code blocks.
+  </Card>
+</div>
+```
+
+<div className="grid grid-cols-2 gap-4">
+  <Card href="#">
+    #### Card One 
+    You can use **markdown** inside cards.
+  </Card>
+
+  <Card href="#">
+    #### Card Two 
+    You can also use `inline code` and code blocks.
+  </Card>
+</div>
+
+---
+
+## Custom Components
+
+The Get Cracked Starter SaaS boilerplate is designed for easy customization. You can effortlessly extend its functionality by integrating your own custom React components into the MDX environment.
+
+```tsx title="lib/mdx.tsx" {2,6}
+// Import your custom components here
+import { Callout } from "@/components/shared/callout";
+import { MdxCard } from "@/components/content/mdx-card";
+
+// Define a map of your custom components
+const components = {
+  Callout,
+  Card: MdxCard, // Example: mapping a custom Card component
+  // Add your custom components here
+};
+
+interface MdxProps {
+  code: string;
+}
+
+export function Mdx({ code }: MdxProps) {
+  const Component = useMDXComponent(code);
+
+  return (
+    <div className="mdx">
+      <Component components={components} />
+    </div>
+  );
+}
+```
+
+To integrate your custom component:
+1.  **Create your React component**: Develop your component as you normally would in a `.tsx` file (e.g., `components/custom-ui/MyCustomComponent.tsx`).
+2.  **Import into `lib/mdx.tsx`**: Add an import statement for your new component at the top of `lib/mdx.tsx`.
+3.  **Map your component**: Add your component to the `components` object in `lib/mdx.tsx`. The key will be the name you use in your MDX files, and the value will be the imported component.
+    Example: `MyCustomComponent: MyCustomComponent,`
+4.  **Use in MDX**: You can now use your custom component directly in any `.mdx` file.
+
+Once you've added your custom component, you can use it in MDX as follows:
+
+```js
+<CustomComponent propName="value" />
+```
+
+---
+
+## HTML Elements
+
+You can overwrite HTML elements using the same technique above.
+
+```tsx {4}
+// Example of overwriting an HTML element
+const components = {
+  ...baseComponents, // Include existing components
+  h1: ({ className, ...props }) => (
+    <h1 className={cn("mt-2 scroll-m-20 text-4xl font-bold tracking-tight", className)} {...props} />
+  ),
+  p: ({ className, ...props }) => (
+    <p className={cn("leading-7 [&:not(:first-child)]:mt-6", className)} {...props} />
+  ),
+  hr: ({ ...props }) => <hr className="my-4 border-slate-200 md:my-6" {...props} />,
+};
+```
+
+This example demonstrates how to overwrite the default rendering of `<h1>`, `<p>`, and `<hr />` tags within your MDX content. You can apply Tailwind CSS classes or any other styling directly within these overwrite definitions.
+
+This will overwrite the `<hr />` tag or `---` in Mardown with the HTML output above.
+
+---
+
+## Styling
+
+Your Get Cracked Starter SaaS boilerplate leverages Tailwind CSS for a highly customizable styling experience. You can apply Tailwind CSS classes directly within your MDX content to style components and elements.
+
+```jsx
+<p className="text-red-600">This text will be red.</p>
+```
+
+Ensure that your `tailwind.config.js` file is correctly configured to scan your MDX content for class names. This typically involves including `content/**/*.mdx` in the `content` array of your Tailwind configuration.

@@ -1,0 +1,265 @@
+---
+title: "Using Clerk with Next.js 14"
+description: "A comprehensive guide to implementing authentication in your Next.js 14 application using Clerk."
+date: "2025-10-23"
+featured: true
+---
+
+<Callout>
+  This guide has been updated to use Clerk, a modern authentication solution for Next.js applications.
+</Callout>
+
+## Introduction to Clerk
+
+Clerk is a complete authentication and user management solution that provides a seamless way to add authentication to your Next.js applications. It offers features like:
+
+- Email/Password authentication
+- Social logins (Google, GitHub, etc.)
+- Multi-factor authentication
+- User management
+- Session management
+- And more!
+
+## Getting Started
+
+### 1. Install Clerk
+
+First, install the Clerk Next.js package:
+
+```bash
+npm install @clerk/nextjs
+# or
+yarn add @clerk/nextjs
+# or
+pnpm add @clerk/nextjs
+```
+
+### 2. Set Up Environment Variables
+
+Create or update your `.env.local` file with your Clerk credentials:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_*
+CLERK_SECRET_KEY=sk_test_*
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+```
+
+### 3. Update `next.config.js`
+
+Update your Next.js configuration to include Clerk's domains:
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    domains: ['images.unsplash.com', 'img.clerk.com'],
+  },
+};
+
+module.exports = nextConfig;
+```
+
+## Setting Up the Clerk Provider
+
+### 1. Create a Root Layout
+
+Update your root layout to include the `ClerkProvider`:
+
+```tsx
+// app/layout.tsx
+import { ClerkProvider } from '@clerk/nextjs';
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <ClerkProvider>
+        <body>{children}</body>
+      </ClerkProvider>
+    </html>
+  );
+}
+```
+
+### 2. Create a Middleware
+
+Create a middleware file to protect your routes:
+
+```ts
+// middleware.ts
+import { authMiddleware } from '@clerk/nextjs';
+ 
+export default authMiddleware({
+  // Public routes that don't require authentication
+  publicRoutes: ['/', '/sign-in(.*)', '/sign-up(.*)'],
+});
+ 
+export const config = {
+  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+};
+```
+
+## Authentication Components
+
+### Sign In Page
+
+Create a sign-in page:
+
+```tsx
+// app/sign-in/[[...sign-in]]/page.tsx
+import { SignIn } from '@clerk/nextjs';
+
+export default function SignInPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+    </div>
+  );
+}
+```
+
+### Sign Up Page
+
+Create a sign-up page:
+
+```tsx
+// app/sign-up/[[...sign-up]]/page.tsx
+import { SignUp } from '@clerk/nextjs';
+
+export default function SignUpPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
+    </div>
+  );
+}
+```
+
+## Protecting Routes
+
+### Server Components
+
+Use `auth()` to protect server components:
+
+```tsx
+// app/dashboard/page.tsx
+import { auth } from '@clerk/nextjs';
+
+export default async function DashboardPage() {
+  const { userId } = auth();
+  
+  if (!userId) {
+    return <div>Not authenticated</div>;
+  }
+  
+  return (
+    <div>
+      <h1>Welcome to your dashboard!</h1>
+      <p>User ID: {userId}</p>
+    </div>
+  );
+}
+```
+
+### Client Components
+
+Use `useUser()` to access user data in client components:
+
+```tsx
+// components/UserButton.tsx
+'use client';
+
+import { UserButton } from '@clerk/nextjs';
+
+export default function UserProfile() {
+  return (
+    <div>
+      <UserButton afterSignOutUrl="/" />
+    </div>
+  );
+}
+```
+
+## Advanced Usage
+
+### Custom User Profile
+
+Create a custom user profile page:
+
+```tsx
+// app/profile/page.tsx
+import { auth } from '@clerk/nextjs';
+
+export default async function ProfilePage() {
+  const { userId } = auth();
+  
+  if (!userId) {
+    return <div>Please sign in to view your profile</div>;
+  }
+  
+  return (
+    <div className="max-w-2xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Your Profile</h1>
+      <div className="space-y-4">
+        <div>
+          <h2 className="font-semibold">User ID</h2>
+          <p className="text-gray-600">{userId}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### API Routes
+
+Protect your API routes:
+
+```ts
+// app/api/protected/route.ts
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const { userId } = auth();
+  
+  if (!userId) {
+    return new NextResponse('Unauthorized', { status: 401 });
+  }
+  
+  return NextResponse.json({ data: 'Protected data' });
+}
+```
+
+## Conclusion
+
+Clerk provides a powerful and flexible authentication solution for Next.js applications. With its pre-built components and easy-to-use API, you can quickly add secure authentication to your application.
+
+For more information, check out the [Clerk documentation](https://clerk.com/docs).
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Clerk not loading**
+   - Make sure your environment variables are correctly set in `.env.local`
+   - Verify your Clerk credentials are correct
+   - Check the browser console for any errors
+
+2. **Middleware issues**
+   - Ensure your middleware is properly configured
+   - Check the matcher pattern in your middleware configuration
+
+3. **API route protection**
+   - Make sure to use `auth()` in your API routes
+   - Check the request headers for the session token
+
+### Getting Help
+
+If you run into any issues, check out the [Clerk documentation](https://clerk.com/docs) or join the [Clerk community](https://clerk.com/community) for support.
