@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 
 /**
- * Simple email preview script
- * Usage: npx tsx scripts/simple-email-preview.ts
+ * Standalone test script to preview codebase delivery email without sending
+ * Usage: npx tsx scripts/test-email-preview-standalone.ts
  */
 
 function generateEmailHtml({
@@ -48,7 +48,7 @@ function generateEmailHtml({
 
       <p class="message">
         Congratulations on your purchase! Your <strong>${planName}</strong> subscription is now active,
-        and your complete codebase is ready for download.
+        and your complete codebase is attached to this email as a zip file.
       </p>
 
       <div class="features">
@@ -93,7 +93,7 @@ function generateEmailHtml({
 }
 
 function testEmailPreview() {
-  console.log('🧪 Testing codebase email preview...\n');
+  console.log('🧪 Testing codebase email preview (standalone)...\n');
 
   try {
     // Test data
@@ -115,13 +115,32 @@ function testEmailPreview() {
     console.log('✅ Email HTML generated successfully!');
     console.log('\n📄 Email Preview (HTML):');
     console.log('=' .repeat(50));
-    console.log(emailHtml);
+    
+    // Save to file for easier viewing
+    const fs = require('fs');
+    const path = require('path');
+    const previewPath = path.join(process.cwd(), '.temp', 'email-preview.html');
+    
+    // Ensure .temp directory exists
+    if (!fs.existsSync('.temp')) {
+      fs.mkdirSync('.temp');
+    }
+    
+    fs.writeFileSync(previewPath, emailHtml);
+    console.log(`📁 Email preview saved to: ${previewPath}`);
+    console.log('💡 You can open this file in a browser to see the formatted email');
     console.log('=' .repeat(50));
 
-    console.log('\n📋 To send actual email:');
-    console.log('1. Add your RESEND_API_KEY to .env.local');
-    console.log('2. Run: CODEBASE_DOWNLOAD_SECRET="your-secret" npm run test:codebase-email');
-    console.log('3. Check your email inbox for the attached zip file');
+    // Show first 500 characters in terminal
+    console.log('\n📝 First 500 characters of email:');
+    console.log('-'.repeat(30));
+    console.log(emailHtml.substring(0, 500) + '...');
+    console.log('-'.repeat(30));
+
+    console.log('\n📋 Next steps:');
+    console.log('1. Open the HTML file in your browser to see the formatted email');
+    console.log('2. Set up your RESEND_API_KEY in .env.local to test actual delivery');
+    console.log('3. Run: npx tsx scripts/test-codebase-email.ts');
 
   } catch (error) {
     console.error('❌ Error generating email preview:', error);

@@ -1,10 +1,20 @@
 #!/usr/bin/env tsx
 
 /**
- * Simple email preview script
- * Usage: npx tsx scripts/simple-email-preview.ts
+ * Test script to send codebase delivery email with Resend
+ * Usage: npx tsx scripts/test-email-with-resend.ts
  */
 
+import { config } from 'dotenv';
+import { createCodebaseZip } from '../scripts/create-codebase-zip';
+import { Resend } from 'resend';
+import { createReadStream } from 'fs';
+import { resolve } from 'path';
+
+// Load environment variables from .env
+config({ path: resolve(process.cwd(), '.env') });
+
+// Email HTML generation function (copied to avoid import issues)
 function generateEmailHtml({
   customerName,
   planName,
@@ -48,7 +58,7 @@ function generateEmailHtml({
 
       <p class="message">
         Congratulations on your purchase! Your <strong>${planName}</strong> subscription is now active,
-        and your complete codebase is ready for download.
+        and your complete codebase is attached to this email as a zip file.
       </p>
 
       <div class="features">
@@ -92,19 +102,35 @@ function generateEmailHtml({
 </html>`;
 }
 
-function testEmailPreview() {
-  console.log('🧪 Testing codebase email preview...\n');
+async function testEmailWithResend() {
+  console.log('🧪 Testing codebase email delivery with Resend...\n');
 
   try {
+    // Check for required environment variables
+    if (!process.env.RESEND_API_KEY) {
+      console.error('❌ RESEND_API_KEY not found in environment variables');
+      console.log('💡 Please add RESEND_API_KEY to your .env.local file');
+      process.exit(1);
+    }
+
+    if (process.env.RESEND_API_KEY.startsWith('re_your')) {
+      console.error('❌ RESEND_API_KEY appears to be placeholder value');
+      console.log('💡 Please update RESEND_API_KEY with your actual Resend API key');
+      process.exit(1);
+    }
+
     // Test data
     const testEmail = 'drewsepeczi@gmail.com';
     const testName = 'Drew Sepeczi';
     const testPlan = 'Business Plan';
     const testUserId = 'test-user-id';
 
-    console.log(`📧 Preview email to: ${testEmail}`);
+    console.log(`📧 Sending test email to: ${testEmail}`);
     console.log(`👤 Customer: ${testName}`);
     console.log(`📦 Plan: ${testPlan}\n`);
+
+    // Initialize Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     // Generate email HTML
     const emailHtml = generateEmailHtml({
@@ -112,21 +138,49 @@ function testEmailPreview() {
       planName: testPlan,
     });
 
-    console.log('✅ Email HTML generated successfully!');
-    console.log('\n📄 Email Preview (HTML):');
-    console.log('=' .repeat(50));
-    console.log(emailHtml);
-    console.log('=' .repeat(50));
+    console.log('📦 Generating codebase zip...');
+    const zipPath = await createCodebaseZip();
 
-    console.log('\n📋 To send actual email:');
-    console.log('1. Add your RESEND_API_KEY to .env.local');
-    console.log('2. Run: CODEBASE_DOWNLOAD_SECRET="your-secret" npm run test:codebase-email');
-    console.log('3. Check your email inbox for the attached zip file');
+    // Read the zip file as buffer
+    const fileBuffer = createReadStream(zipPath);
+
+    // Convert buffer to base64
+    const chunks: Buffer[] = [];
+    for await (const chunk of fileBuffer) {
+      chunks.push(chunk);
+    }
+    const buffer = Buffer.concat(chunks);
+    const base64Content = buffer.toString('base64');
+
+    console.log(`📧 Sending email with ${Math.round(base64Content.length / 1024)}KB attachment...`);
+
+    // Send email
+    const result = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'noreply@getcracked.lol',
+      to: [testEmail],
+      subject: `Your Get Cracked ${testPlan} Codebase is Ready! 🚀`,
+      html: emailHtml,
+      attachments: [
+        {
+          filename: 'getcracked-codebase.zip',
+          content: base64Content,
+        },
+      ],
+    });
+
+    console.log('✅ Email sent successfully!');
+    console.log(`📧 Message ID: ${result.data?.id}`);
+    console.log('\n📋 Next steps:');
+    console.log('1. Check your email inbox');
+    console.log('2. Look for the attached getcracked-codebase.zip file');
+    console.log('3. Download and verify the zip file contains the codebase');
 
   } catch (error) {
-    console.error('❌ Error generating email preview:', error);
+    console.error('❌ Error sending test email:', error);
+    console.error('❌ Full error details:', JSON.stringify(error, null, 2));
+    process.exit(1);
   }
 }
 
-// Run the preview
-testEmailPreview();
+// Run the test
+testEmailWithResend();
