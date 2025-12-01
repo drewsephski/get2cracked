@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { useSelectedLayoutSegment, usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
@@ -18,8 +18,12 @@ export function NavMobile() {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const selectedLayout = useSelectedLayoutSegment();
+  const pathname = usePathname();
   const documentation = selectedLayout === "docs";
 
+  // Hide NavMobile on protected routes (dashboard, admin) since MobileSheetSidebar handles those
+  const isProtectedRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/admin');
+  
   const configMap = {
     docs: docsConfig.mainNav,
   };
@@ -35,6 +39,11 @@ export function NavMobile() {
       document.body.style.overflow = "auto";
     }
   }, [open]);
+
+  // Early return after all hooks are called
+  if (isProtectedRoute) {
+    return null;
+  }
 
   return (
     <>

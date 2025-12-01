@@ -43,3 +43,6 @@ next-env.d.ts
 .contentlayer
 # Local Netlify folder
 .netlify
+
+# clerk configuration (can include secrets)
+/.clerk/

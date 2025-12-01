@@ -22,6 +22,7 @@ const nextConfig = {
       'localhost',
       'getcracked.lol',
       'avatars.githubusercontent.com',
+      'get2cracked.netlify.app',
       'lh3.googleusercontent.com',
       'randomuser.me',
       'assets.aceternity.com'
